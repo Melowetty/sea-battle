@@ -11,10 +11,12 @@ group = "ru.sigma"
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
-    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter)
     implementation(project(":data"))
     implementation(project(":security"))
     implementation(project(":api"))
+    implementation(project(":game-core"))
+    implementation(project(":match-making"))
 }
 
 allprojects {
@@ -37,6 +39,7 @@ subprojects {
     }
 
     dependencies {
+        implementation("org.springframework.boot:spring-boot-starter")
         implementation("org.jetbrains.kotlin:kotlin-stdlib")
         implementation("org.jetbrains.kotlin:kotlin-reflect")
         testImplementation("org.jetbrains.kotlin:kotlin-test")
