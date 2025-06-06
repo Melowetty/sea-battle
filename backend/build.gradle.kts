@@ -4,28 +4,31 @@ plugins {
     alias(libs.plugins.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
+
 }
 
 group = "ru.sigma"
 version = "0.0.1-SNAPSHOT"
 
+dependencies {
+    implementation(libs.spring.boot.starter.web)
+    implementation(project(":data"))
+    implementation(project(":security"))
+    implementation(project(":api"))
+}
+
 allprojects {
     repositories {
         mavenCentral()
+        google()
     }
-}
-
-dependencies {
-    implementation(libs.spring.boot.starter.web)
 }
 
 subprojects {
     plugins.apply("org.jetbrains.kotlin.jvm")
     plugins.apply("org.jetbrains.kotlin.kapt")
     plugins.apply("org.jetbrains.kotlin.plugin.spring")
-    plugins.apply("org.springframework.boot")
-    plugins.apply("io.spring.dependency.management")
-
+    plugins.apply("io.spring.dependency-management")
 
     java {
         toolchain {
