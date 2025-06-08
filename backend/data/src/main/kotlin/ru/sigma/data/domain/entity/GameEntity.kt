@@ -2,32 +2,28 @@ package ru.sigma.data.domain.entity
 
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
-import jakarta.persistence.Convert
 import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.FetchType
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
-import org.hibernate.annotations.CreationTimestamp
-import ru.sigma.data.domain.converter.JsonbConverter
 import java.time.Instant
+import org.hibernate.annotations.CreationTimestamp
+import ru.sigma.data.domain.model.GameStatus
 
 @Entity
 @Table(name = "game")
-data class GameEntity(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
-    val id: Int? = null,
+class GameEntity(
+    id: Long = 0L,
 
     @Column(name = "status", nullable = false)
-    val status: String,
+    @Enumerated(value = EnumType.STRING)
+    val status: GameStatus,
 
-    @Column(name = "state", columnDefinition = "jsonb")
-    @Convert(converter = JsonbConverter::class)
-    val state: Map<String, Any>? = null,
+    @Column(name = "state", columnDefinition = "JSONB")
+    val state: Any? = null,
 
     @Column(name = "started_at")
     val startedAt: Instant? = null,
@@ -42,6 +38,6 @@ data class GameEntity(
     @OneToOne(mappedBy = "game", cascade = [CascadeType.ALL])
     val gameLink: GameLinkEntity? = null,
 
-    @ManyToMany(mappedBy = "games")
-    val players: MutableSet<UsersEntity> = mutableSetOf()
-)
+    @ManyToMany(mappedBy = "games", fetch = FetchType.EAGER)
+    val players: MutableSet<UserEntity> = mutableSetOf()
+): BaseEntity(id)

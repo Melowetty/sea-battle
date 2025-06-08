@@ -1,23 +1,22 @@
 package ru.sigma.data.domain.entity
 
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
+import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
-import org.hibernate.annotations.CreationTimestamp
 import java.time.Instant
 import java.util.UUID
+import org.hibernate.annotations.CreationTimestamp
 
 @Entity
 @Table(name = "users")
-open class UsersEntity(
+open class UserEntity(
     @Id
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     val id: UUID,
 
     @Column(name = "telegram_id", nullable = false, unique = true)
@@ -27,8 +26,8 @@ open class UsersEntity(
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant,
 
-    @Column(name = "first_name", nullable = false)
-    val firstName: String,
+    @Column(name = "name", nullable = false)
+    val name: String,
 
     @Column(name = "avatar")
     val avatar: String? = null,
@@ -36,8 +35,8 @@ open class UsersEntity(
     @Column(name = "is_bot", nullable = false)
     val isBot: Boolean,
 
-    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL])
-    val statistic: StatisticEntity? = null,
+    @Embedded
+    val statistic: StatisticEntity,
 
     @ManyToMany
     @JoinTable(
@@ -46,7 +45,17 @@ open class UsersEntity(
         inverseJoinColumns = [JoinColumn(name = "game_id")]
     )
     val games: MutableSet<GameEntity> = mutableSetOf()
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is UserEntity) return false
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+}
 
 
 
