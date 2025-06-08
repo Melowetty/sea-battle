@@ -4,7 +4,7 @@ dependencies {
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.websocket)
     implementation(libs.jackson.kotlin)
-    runtimeOnly(libs.jwt.api)
+    runtimeOnly(libs.jwt.impl)
     runtimeOnly(libs.jwt.jackson)
     testImplementation(libs.spring.boot.starter.test)
 }
