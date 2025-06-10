@@ -51,3 +51,7 @@ subprojects {
         useJUnitPlatform()
     }
 }
+
+tasks.jar {
+    enabled = false
+}

@@ -31,6 +31,8 @@ liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liqui
 spring-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "springBoot" }
 spring-websocket = { module = "org.springframework.boot:spring-boot-starter-websocket", version.ref = "springBoot" }
 
+spring-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
+
 jwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jwt" }
 jwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jwt" }
 jwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jwt" }
