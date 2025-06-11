@@ -12,6 +12,7 @@ import jakarta.persistence.Table
 import java.time.Instant
 import org.hibernate.annotations.CreationTimestamp
 import ru.sigma.data.domain.model.GameStatus
+import ru.sigma.data.domain.model.game.GameState
 
 @Entity
 @Table(name = "game")
@@ -23,7 +24,7 @@ class GameEntity(
     val status: GameStatus,
 
     @Column(name = "state", columnDefinition = "JSONB")
-    val state: Any? = null,
+    var state: GameState? = null,
 
     @Column(name = "started_at")
     val startedAt: Instant? = null,
