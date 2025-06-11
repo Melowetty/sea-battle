@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.spring.jpa)
+    alias(libs.plugins.spring.dependency.management)
 }
 
 dependencies {
@@ -7,7 +8,6 @@ dependencies {
     implementation(libs.liquibase.core)
     runtimeOnly(libs.postgresql)
     testImplementation(libs.spring.boot.starter.test)
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.0")
 }
 
 allOpen {
