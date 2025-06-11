@@ -10,6 +10,7 @@ import ru.sigma.data.domain.model.game.Coordinate
 import ru.sigma.data.domain.model.game.GameState
 import ru.sigma.data.repository.GameRepository
 import java.util.UUID
+import kotlin.collections.plus
 
 
 @Service
@@ -18,7 +19,11 @@ class GameService(
     private val gameRepository: GameRepository
 ) {
 
-    fun startNewGame(gameId: Long, players: Map<UUID,List<List<List<Int>>>>, size: Int) {
+    fun startNewGame(
+        gameId: Long,
+        players: Map<UUID,List<List<List<Int>>>>,
+        size: Int
+    ) {
         val playerStates = mutableMapOf<UUID, PlayerState>()
         val playerIds = players.keys.toList()
 
@@ -43,27 +48,53 @@ class GameService(
         gameRepository.save(gameEntity)
     }
 
-    fun checkShot(gameId: Long, shot: List<Int>): Map<Event, PlayerState>? {
+    fun checkShot(
+        gameId: Long,
+        shot: List<Int>
+    ): Map<Event, PlayerState>? {
         var gameEntity: GameEntity = gameRepository.findById(gameId)
             .orElseThrow{EntityNotFoundException("Entity not found with id: $gameId")}
         var gameState = gameEntity.state
             ?: throw IllegalStateException("Game state is null")
-        var target = gameState.targetPlayer
-        var allShips = gameState.playersFields[target]?.ships
+        var enemyPlayerState = gameState?.playersFields[gameState.targetPlayer]
             ?: throw IllegalStateException("Game state is null")
         val shotCoordinate = Coordinate(shot[0], shot[1])
+        var event = defineAnEvent( // проверяем куда попал снаряд
+            enemyPlayerState,
+            shotCoordinate
+        )
 
-        allShips.forEach { ship ->
+        swapPlayers(gameState) // меняем ход игроков
+        gameRepository.save(gameEntity) // сохраняем в бд изменения
+
+        return mapOf(event to enemyPlayerState)
+    }
+
+    private fun defineAnEvent(
+        enemyPlayerState: PlayerState,
+        shotCoordinate: Coordinate
+    ): Event{
+        var event = Event.MISS
+        enemyPlayerState.ships.forEach { ship ->
             if (ship.coordinates.indexOf(shotCoordinate) != -1) {
-                gameState.playersFields[target]!!.hits += shotCoordinate
-                ship.healthPoints -= 1
+                enemyPlayerState.hits += shotCoordinate
+                ship.healthPoints--
+                event = Event.HIT
                 if (ship.healthPoints  == 0){
                     ship.status = ShipStatus.DEAD
+                    enemyPlayerState.aliveShips--
+                    event = Event.DESTRUCTION
                 }
             }
         }
+        return event
+    }
 
-
-        return null
+    private fun swapPlayers(
+        gameState: GameState
+    ) {
+        val currentActive = gameState.activePlayer
+        gameState.activePlayer = gameState.targetPlayer
+        gameState.targetPlayer = currentActive
     }
 }

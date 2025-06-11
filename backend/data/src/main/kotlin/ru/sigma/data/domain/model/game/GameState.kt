@@ -6,8 +6,8 @@ import java.util.UUID
 
 data class GameState(
     val gameId: Long,
-    val activePlayer: UUID,
-    val targetPlayer: UUID,
+    var activePlayer: UUID,
+    var targetPlayer: UUID,
     val playersFields: Map<UUID, PlayerState>, // игроки и их поля
     val fieldSize: Int, // размер поля
 )
@@ -17,7 +17,7 @@ data class PlayerState(
     val ships: List<Ship>, // мои корабли
     var hits: List<Coordinate>, // попадания по мне
     val misses: List<Coordinate>, // промахи помне
-    val aliveShips: Int // количество живых кораблей
+    var aliveShips: Int // количество живых кораблей
 )
 
 //data class FieldState(
