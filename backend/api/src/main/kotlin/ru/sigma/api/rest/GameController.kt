@@ -1,4 +1,4 @@
-package ru.sigma.api.controller
+package ru.sigma.api.rest
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping

@@ -1,7 +1,7 @@
-package ru.sigma.security.controller
+package ru.sigma.security.rest
 
 import org.springframework.web.bind.annotation.RestController
-import ru.sigma.api.controller.GameController
+import ru.sigma.api.rest.GameController
 
 @RestController
 class SecuredGameController : GameController() {
