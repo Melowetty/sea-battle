@@ -9,20 +9,41 @@ import java.util.UUID
 
 class InitService {
 
-    fun initShip(coordinates: List<List<Int>>): Ship {
-        var allCoordinate: List<Coordinate> = emptyList()
-        coordinates.forEach {
-            allCoordinate += Coordinate(it[0],it[1])
+    fun initGameState(
+        gameId: Long,
+        players: Map<UUID, List<List<List<Int>>>>,
+        size: Int
+    ): GameState {
+        val playerStates = mutableMapOf<UUID, PlayerState>()
+        val playerIds = players.keys.toList()
+
+        players.forEach { (currentPlayerId, shipData) ->
+            val ships = shipData.map { initShip(it) }
+
+            playerStates[currentPlayerId] = initPlayerState(
+                thisPlayer = currentPlayerId,
+                ships = ships
+            )
         }
-        return Ship(
-            coordinates = allCoordinate,
-            hits = emptyList(),
-            healthPoints = allCoordinate.size,
-            status = ShipStatus.ALIVE
+        return GameState(
+            gameId = gameId,
+            round = 1,
+            playersFields = playerStates,
+            fieldSize = size,
+            history = emptyList(),
+            players = playerIds
         )
     }
 
-    fun initPlayerState(
+    private fun initShip(coordinates: List<List<Int>>): Ship =
+        Ship(
+            coordinates = coordinates.map { (x, y) -> Coordinate(x, y) },
+            hits = emptyList(),
+            healthPoints = coordinates.size,
+            status = ShipStatus.ALIVE
+        )
+
+    private fun initPlayerState(
         thisPlayer: UUID,
         ships: List<Ship>
     ): PlayerState {
@@ -33,20 +54,5 @@ class InitService {
             misses = emptyList(),
             aliveShips = ships.size
         )
-    }
-
-    fun initGame(
-        gameId: Long,
-        players: Map<UUID, PlayerState>,
-        size: Int
-    ): GameState {
-        val initGame = GameState(
-            gameId = gameId,
-            activePlayer = players.keys.elementAt(0),
-            targetPlayer = players.keys.elementAt(1),
-            playersFields = players,
-            fieldSize = size
-        )
-        return initGame
     }
 }

@@ -6,10 +6,11 @@ import java.util.UUID
 
 data class GameState(
     val gameId: Long,
-    var activePlayer: UUID,
-    var targetPlayer: UUID,
+    var round: Int, // какой сейчас раунд
     val playersFields: Map<UUID, PlayerState>, // игроки и их поля
     val fieldSize: Int, // размер поля
+    var history: List<String>, // история раундов по id
+    var players: List<UUID> // список игроков
 )
 
 data class PlayerState(
@@ -40,4 +41,6 @@ data class Ship(
 data class Coordinate(
     val x: Int,
     val y: Int
-)
+) {
+    override fun toString(): String = "[$x, $y]"
+}
