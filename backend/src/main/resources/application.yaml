@@ -16,6 +16,8 @@ spring:
         live-time: 30m
       refresh-token:
         live-time: 30D
+    telegram:
+      bot-token: ${TELEGRAM_BOT_TOKEN:12345:trvbccgdgfgdfgd}
 app:
   cron:
     delete-revoked-tokens: 0 0 0 * * *

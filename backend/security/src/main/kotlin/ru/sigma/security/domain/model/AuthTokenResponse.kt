@@ -4,5 +4,5 @@ data class AuthTokenResponse(
     val accessToken: String,
     val accessTokenExpiresIn: Long,
     val refreshToken: String,
-    val refreshExpiresIn: Long
+    val refreshTokenExpiresIn: Long
 )

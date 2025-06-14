@@ -6,16 +6,17 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.time.Instant
-
 
 @Entity
 @Table(name = "game_result")
 class GameResultEntity (
-    val id: Long,
+    id: Long,
 
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "winner_id", nullable = false)
     val winner: UserEntity,
 
     @Column(name = "started_at", nullable = false)
@@ -31,4 +32,4 @@ class GameResultEntity (
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
     val players: MutableSet<UserEntity> = mutableSetOf()
-)
+): BaseEntity(id)

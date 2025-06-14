@@ -74,7 +74,7 @@ class JwtService(
 
         return TokenInfo(
             token = token,
-            expiresIn = liveTime.toSeconds().toInt()
+            expiresIn = liveTime.toSeconds()
         )
     }
 

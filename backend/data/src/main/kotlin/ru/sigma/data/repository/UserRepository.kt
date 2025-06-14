@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository
 import ru.sigma.data.domain.entity.UserEntity
 
 @Repository
-interface UserRepository: JpaRepository<UserEntity, UUID>
+interface UserRepository: JpaRepository<UserEntity, UUID> {
+    fun findByTelegramId(telegramId: Long): UserEntity?
+}

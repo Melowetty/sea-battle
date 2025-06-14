@@ -17,14 +17,14 @@ import org.hibernate.annotations.CreationTimestamp
 open class UserEntity(
     @Id
     @Column(name = "id")
-    val id: UUID,
+    val id: UUID = UUID.randomUUID(),
 
     @Column(name = "telegram_id", nullable = false, unique = true)
     val telegramId: Long,
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    val createdAt: Instant,
+    val createdAt: Instant = Instant.now(),
 
     @Column(name = "name", nullable = false)
     val name: String,
@@ -36,7 +36,7 @@ open class UserEntity(
     val isBot: Boolean,
 
     @Embedded
-    val statistic: StatisticEntity,
+    val statistic: StatisticEntity= StatisticEntity(),
 
     @ManyToMany
     @JoinTable(

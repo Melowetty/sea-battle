@@ -1,25 +1,25 @@
 package ru.sigma.gamecore.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.persistence.EntityNotFoundException
+import java.time.Instant
+import java.util.UUID
 import org.springframework.stereotype.Service
 import ru.sigma.data.domain.entity.GameEntity
-import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.domain.model.Event
 import ru.sigma.data.domain.model.ShipStatus
 import ru.sigma.data.domain.model.game.Coordinate
 import ru.sigma.data.domain.model.game.GameState
+import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.repository.GameRepository
 import ru.sigma.data.repository.UserRepository
-import java.sql.Time
-import java.time.Instant
-import java.util.UUID
-import kotlin.collections.plus
+
 @Service
 class GameService(
     private val initService: InitService,
     private val gameRepository: GameRepository,
-    private val userRepository: UserRepository
-
+    private val userRepository: UserRepository,
+    private val objectMapper: ObjectMapper,
 ) {
 
     fun startNewGame(
@@ -27,11 +27,14 @@ class GameService(
         players: Map<UUID, List<List<List<Int>>>>,
         size: Int
     ) {
-        var game = GameEntity(
+        val state = initService.initGameState(gameId, players, size)
+        val stateAsString = objectMapper.writeValueAsString(state)
+
+        val game = GameEntity(
             id = gameId,
-            state = initService.initGameState(gameId, players, size),
+            state = stateAsString,
             createdAt = Instant.now(),
-            players = players.keys.mapNotNull { userRepository.findById(it).orElse(null) }.toMutableSet()
+            players = userRepository.findAllById(players.keys.toList()).toMutableSet()
         )
 
         gameRepository.save(game)
@@ -73,7 +76,9 @@ class GameService(
         val game = gameRepository.findById(gameId)
             .orElseThrow { EntityNotFoundException("Entity not found with id: $gameId") }
 
-        return game.state ?: throw IllegalStateException("Game state is null")
+        val gameState = objectMapper.readValue(game.state, GameState::class.java)
+
+        return gameState
     }
 
     private fun getCurrentAndTargetPlayerIds(gameState: GameState): Pair<UUID, UUID> {

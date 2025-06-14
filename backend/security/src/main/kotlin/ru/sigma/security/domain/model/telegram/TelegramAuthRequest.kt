@@ -1,7 +1,7 @@
 package ru.sigma.security.domain.model.telegram
 
 data class TelegramAuthRequest(
-    val id: String,
+    val id: Long,
     val firstName: String,
     val lastName: String,
     val username: String,
