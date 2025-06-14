@@ -1,6 +1,5 @@
 package ru.sigma.data.domain.model.game
 
-import ru.sigma.data.domain.model.GameStatus
 import ru.sigma.data.domain.model.ShipStatus
 import java.util.UUID
 

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service
 import ru.sigma.data.domain.entity.GameEntity
 import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.domain.model.Event
-import ru.sigma.data.domain.model.GameStatus
 import ru.sigma.data.domain.model.ShipStatus
 import ru.sigma.data.domain.model.game.Coordinate
 import ru.sigma.data.domain.model.game.GameState
@@ -30,14 +29,11 @@ class GameService(
     ) {
         var game = GameEntity(
             id = gameId,
-            status = GameStatus.STARTED,
             state = initService.initGameState(gameId, players, size),
             createdAt = Instant.now(),
             players = players.keys.mapNotNull { userRepository.findById(it).orElse(null) }.toMutableSet()
         )
-//            gameRepository.findById(gameId)
-//            .orElseThrow { EntityNotFoundException("Entity not found with id: $gameId") }
-//        game.state = initService.initGameState(gameId, players, size)
+
         gameRepository.save(game)
     }
 
