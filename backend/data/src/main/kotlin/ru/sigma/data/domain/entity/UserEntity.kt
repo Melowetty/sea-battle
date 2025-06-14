@@ -44,7 +44,17 @@ open class UserEntity(
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "game_id")]
     )
-    val games: MutableSet<GameEntity> = mutableSetOf()
+    val games: MutableSet<GameEntity> = mutableSetOf(),
+
+    @ManyToMany
+    @JoinTable(
+        name = "game_result_user",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "game_result_id")]
+    )
+    val gameResults: MutableSet<GameResultEntity> = mutableSetOf()
+
+
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
