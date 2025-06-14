@@ -1,26 +1,13 @@
 package ru.sigma.api
 
-import jakarta.validation.constraints.Min
-import jakarta.validation.constraints.NotBlank
-import org.springframework.stereotype.Component
-import org.springframework.validation.annotation.Validated
+interface MatchMakingApi {
+    fun joinRandomRoom()
 
-@Validated
-@Component
-class MatchMakingApi {
-    fun joinRandomGame() {
-        throw NotImplementedError("Not implemented")
-    }
+    fun joinRoom(code: String)
 
-    fun joinGame(@NotBlank code: String) {
-        throw NotImplementedError("Not implemented")
-    }
+    fun createRoom(request: Any)
 
-    fun createGame(request: Any) {
-        throw NotImplementedError("Not implemented")
-    }
+    fun startRoom(roomId: Long)
 
-    fun startGame(@Min(1) gameId: Long) {
-        throw NotImplementedError("Not implemented")
-    }
+    fun leaveRoom(roomId: Long)
 }

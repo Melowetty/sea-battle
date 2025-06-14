@@ -8,4 +8,14 @@ spring:
     password: ${DB_PASSWORD:root}
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
+  security:
+    jwt:
+      private-key: ${JWT_SIGN_KEY:testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest}
+      access-token:
+        live-time: 30m
+      refresh-token:
+        live-time: 30D
+app:
+  cron:
+    delete-revoked-tokens: 0 0 0 * * *

@@ -33,6 +33,8 @@ spring-websocket = { module = "org.springframework.boot:spring-boot-starter-webs
 
 spring-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
 
+spring-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "springBoot" }
+
 jwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jwt" }
 jwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jwt" }
 jwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jwt" }

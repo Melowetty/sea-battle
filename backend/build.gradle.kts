@@ -17,6 +17,8 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":game-core"))
     implementation(project(":match-making"))
+    implementation(project(":common"))
+    implementation(project(":web"))
 }
 
 allprojects {

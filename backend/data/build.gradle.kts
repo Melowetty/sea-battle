@@ -4,7 +4,8 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.spring.boot.starter.data.jpa)
+    api(libs.spring.boot.starter)
+    api(libs.spring.boot.starter.data.jpa)
     implementation(libs.liquibase.core)
     runtimeOnly(libs.postgresql)
     testImplementation(libs.spring.boot.starter.test)
