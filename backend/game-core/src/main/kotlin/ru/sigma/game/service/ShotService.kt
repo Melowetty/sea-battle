@@ -9,6 +9,7 @@ import ru.sigma.data.domain.model.game.GameState
 import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.repository.GameRepository
 import ru.sigma.data.repository.UserRepository
+import ru.sigma.domain.dto.ShotResultDto
 import java.util.UUID
 import kotlin.collections.plus
 
@@ -21,7 +22,7 @@ class ShotService (
         gameId: Long,
         gameState: GameState,
         shot: Coordinate
-    ): Map<Event, PlayerState> {
+    ): ShotResultDto {
         val (currentPlayerId, targetPlayerId) = getCurrentAndTargetPlayerIds(gameState)
 
         val targetPlayerState = gameState.playersFields[targetPlayerId]
@@ -44,7 +45,15 @@ class ShotService (
                 .orElseThrow { EntityNotFoundException("Entity not found with id: $gameId") }
         )
 
-        return mapOf(event to targetPlayerState)
+        // указываем следующего игрока
+        var nextPlayer = currentPlayerId
+        if (event == Event.MISS) { nextPlayer = targetPlayerId }
+
+        return ShotResultDto(
+            event = event,
+            targetState = targetPlayerState,
+            nextPlayer = nextPlayer
+        )
     }
 
 

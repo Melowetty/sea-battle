@@ -1,4 +1,17 @@
 package ru.sigma.domain.dto
 
-class GameDto {
-}
+import ru.sigma.data.domain.model.game.PlayerState
+import java.time.Instant
+import java.util.UUID
+
+class GameDto(
+    val players: List<PlayerDto>,
+    val currentPlayer: UUID,
+    val playerState: PlayerState,
+    val gameStartDate: Instant
+)
+
+class PlayerDto(
+    val name: String,
+    val avatar: String,
+)

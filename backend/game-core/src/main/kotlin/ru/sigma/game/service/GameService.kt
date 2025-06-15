@@ -16,6 +16,7 @@ import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.repository.GameRepository
 import ru.sigma.data.repository.GameResultRepository
 import ru.sigma.data.repository.UserRepository
+import ru.sigma.domain.dto.ShotResultDto
 import ru.sigma.gamecore.domain.model.BotTurnEvent
 import java.util.Timer
 import java.util.TimerTask
@@ -54,14 +55,12 @@ class GameService(
     fun processTheShot(
         gameId: Long,
         shot: Coordinate
-    ): Map<Event, PlayerState, UUID> {
+    ): ShotResultDto {
         val gameState = loadGameState(gameId) // полуеаем текущее состояние игры по id
 
         val result = shotService.checkShot(gameId, gameState, shot) // делаем выстрел и получаем результат
 
-        val event = result.keys.elementAt<Event>(0)
-
-        calculateNextMove(gameId, event, gameState)
+        calculateNextMove(gameId,  result.event, gameState)
 
         return result // возвращаем рещультат выстрела
     }
