@@ -1,14 +1,14 @@
-package ru.sigma.gamecore.service
+package ru.sigma.game.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.persistence.EntityNotFoundException
 import java.time.Instant
 import java.util.UUID
 import org.springframework.stereotype.Service
+import ru.sigma.common.model.Coordinate
 import ru.sigma.data.domain.entity.GameEntity
 import ru.sigma.data.domain.model.Event
 import ru.sigma.data.domain.model.ShipStatus
-import ru.sigma.data.domain.model.game.Coordinate
 import ru.sigma.data.domain.model.game.GameState
 import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.repository.GameRepository
@@ -24,7 +24,7 @@ class GameService(
 
     fun startNewGame(
         gameId: Long,
-        players: Map<UUID, List<List<List<Int>>>>,
+        players: Map<UUID, List<List<Coordinate>>>,
         size: Int
     ) {
         val state = initService.initGameState(gameId, players, size)

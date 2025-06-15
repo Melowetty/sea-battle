@@ -1,17 +1,19 @@
-package ru.sigma.gamecore.service
+package ru.sigma.game.service
 
 import ru.sigma.data.domain.model.ShipStatus
-import ru.sigma.data.domain.model.game.Coordinate
 import ru.sigma.data.domain.model.game.GameState
 import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.domain.model.game.Ship
 import java.util.UUID
+import org.springframework.stereotype.Service
+import ru.sigma.common.model.Coordinate
 
+@Service
 class InitService {
 
     fun initGameState(
         gameId: Long,
-        players: Map<UUID, List<List<List<Int>>>>,
+        players: Map<UUID, List<List<Coordinate>>>,
         size: Int
     ): GameState {
         val playerStates = mutableMapOf<UUID, PlayerState>()
@@ -35,9 +37,9 @@ class InitService {
         )
     }
 
-    private fun initShip(coordinates: List<List<Int>>): Ship =
+    private fun initShip(coordinates: List<Coordinate>): Ship =
         Ship(
-            coordinates = coordinates.map { (x, y) -> Coordinate(x, y) },
+            coordinates = coordinates,
             hits = emptyList(),
             healthPoints = coordinates.size,
             status = ShipStatus.ALIVE
