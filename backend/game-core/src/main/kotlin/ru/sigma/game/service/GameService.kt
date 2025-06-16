@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service
 import ru.sigma.common.model.Coordinate
 import ru.sigma.data.domain.entity.GameEntity
 import ru.sigma.data.domain.entity.GameResultEntity
+import ru.sigma.data.domain.entity.UserEntity
 import ru.sigma.data.domain.model.Event
 import ru.sigma.data.domain.model.ShipStatus
 import ru.sigma.data.domain.model.game.GameState
@@ -16,6 +17,8 @@ import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.repository.GameRepository
 import ru.sigma.data.repository.GameResultRepository
 import ru.sigma.data.repository.UserRepository
+import ru.sigma.domain.dto.GameDto
+import ru.sigma.domain.dto.PlayerDto
 import ru.sigma.domain.dto.ShotResultDto
 import ru.sigma.gamecore.domain.model.BotTurnEvent
 import java.util.Timer
@@ -50,6 +53,16 @@ class GameService(
         gameRepository.save(game)
 
         checkBotTurn(gameId, state)
+    }
+
+    fun getCurrentGameInfo(
+        gameId: Long,
+        userId: UUID
+    ): GameDto {
+        return createGameDto(
+            gameId = gameId,
+            userId = userId
+        )
     }
 
     fun processTheShot(
@@ -87,7 +100,11 @@ class GameService(
 
     private fun getCurrentUser(game: GameState): UUID = game.players[1 - (game.round % 2)]
 
-    private fun calculateNextMove(gameId: Long, event: Event, gameState: GameState) {
+    private fun calculateNextMove(
+        gameId: Long,
+        event: Event,
+        gameState: GameState
+    ) {
         if (event == Event.ALL_DESTRUCTION) { // если текущий игрок всех победил
             processTheVictory(gameId, gameState)
         }
@@ -99,7 +116,10 @@ class GameService(
         }
     }
 
-    private fun checkBotTurn(gameId: Long, gameState: GameState) {
+    private fun checkBotTurn(
+        gameId: Long,
+        gameState: GameState
+    ) {
         val nextRoundUserId = gameState.players[1 - (gameState.round % 2)]
         val currentPlayer = userRepository.findById(nextRoundUserId)
             .orElseThrow { EntityNotFoundException("Entity not found with id: $nextRoundUserId") }
@@ -110,7 +130,10 @@ class GameService(
 
     }
 
-    private fun callBot(gameId: Long, botId: UUID) {
+    private fun callBot(
+        gameId: Long,
+        botId: UUID
+    ) {
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 eventPublisher.publishEvent(BotTurnEvent(gameId, botId))
@@ -118,12 +141,36 @@ class GameService(
         }, 5000)
     }
 
-    private fun loadGameState(gameId: Long): GameState {
+    private fun loadGameState(
+        gameId: Long
+    ): GameState {
         val game = gameRepository.findById(gameId)
             .orElseThrow { EntityNotFoundException("Entity not found with id: $gameId") }
 
         val gameState = objectMapper.readValue(game.state, GameState::class.java)
 
         return gameState
+    }
+
+    private fun createGameDto(gameId: Long, userId: UUID): GameDto {
+        val game = gameRepository.findById(gameId)
+            .orElseThrow { EntityNotFoundException("Entity not found with id: $gameId") }
+
+        val gameState = loadGameState(gameId)
+        val currentPlayer = gameState.players[1 - (gameState.round % 2)]
+        val playerState = gameState.playersFields[userId]
+            ?: throw IllegalStateException("Player state is null")
+
+        val players = game.players.map { user ->
+            PlayerDto(name = user.name, avatar = user.avatar)
+        }
+
+        return GameDto(
+            players = players,
+            currentPlayer = currentPlayer,
+            playerState = playerState,
+            gameStartDate = game.createdAt
+        )
+
     }
 }

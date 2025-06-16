@@ -13,5 +13,5 @@ class GameDto(
 
 class PlayerDto(
     val name: String,
-    val avatar: String,
+    val avatar: String? = null,
 )
