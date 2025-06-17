@@ -2,26 +2,39 @@ package ru.sigma.api.impl
 
 import org.springframework.stereotype.Component
 import ru.sigma.api.MatchMakingApi
+import ru.sigma.common.dto.RoomDto
+import ru.sigma.domain.dto.GameDto
+import ru.sigma.matchmaking.service.MatchMakingService
 
 @Component
-class MatchMakingApiImpl: MatchMakingApi {
-    override fun joinRandomRoom() {
-        throw NotImplementedError("Not implemented")
+class MatchMakingApiImpl(
+    private val matchMakingService: MatchMakingService
+): MatchMakingApi {
+    override fun getRoom(code: String): RoomDto {
+        return matchMakingService.getRoom(code)
     }
 
-    override fun joinRoom(code: String) {
-        throw NotImplementedError("Not implemented")
+    override fun joinRandomRoom(): RoomDto {
+        return matchMakingService.joinRandomRoom()
     }
 
-    override fun createRoom(request: Any) {
-        throw NotImplementedError("Not implemented")
+    override fun joinRoom(code: String): RoomDto {
+        return matchMakingService.joinRoom(code)
     }
 
-    override fun startRoom(roomId: Long) {
-        throw NotImplementedError("Not implemented")
+    override fun createRoom(): RoomDto {
+        return matchMakingService.createRoom()
     }
 
-    override fun leaveRoom(roomId: Long) {
-        throw NotImplementedError("Not implemented")
+    override fun startRoom(code: String): GameDto {
+        return matchMakingService.startGame(code)
+    }
+
+    override fun startRoomWithBots(code: String): GameDto {
+        TODO("Not yet implemented")
+    }
+
+    override fun leaveRoom(code: String) {
+        return matchMakingService.leaveRoom(code)
     }
 }

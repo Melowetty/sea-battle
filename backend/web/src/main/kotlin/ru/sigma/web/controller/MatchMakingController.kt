@@ -1,12 +1,13 @@
 package ru.sigma.web.controller
 
-import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotBlank
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import ru.sigma.common.dto.RoomDto
+import ru.sigma.domain.dto.GameDto
 import ru.sigma.security.api.SecuredMatchMakingApi
 
 @RestController
@@ -17,27 +18,32 @@ class MatchMakingController(
 ) {
 
     @PostMapping("/join/random")
-    fun joinRandomRoom() {
+    fun joinRandomRoom(): RoomDto {
         return securedMatchMakingApi.joinRandomRoom()
     }
 
     @PostMapping("/join/{code}")
-    fun joinRoom(@PathVariable code: String) {
+    fun joinRoom(@PathVariable code: String): RoomDto {
         return securedMatchMakingApi.joinRoom(code)
     }
 
     @PostMapping("/create")
-    fun createRoom(@RequestBody request: Any) {
-        return securedMatchMakingApi.createRoom(request)
+    fun createRoom(): RoomDto {
+        return securedMatchMakingApi.createRoom()
     }
 
-    @PostMapping("/{id}/start")
-    fun startRoom(@PathVariable @Min(1) id: Long) {
-        return securedMatchMakingApi.startRoom(id)
+    @PostMapping("/{code}/start")
+    fun startRoom(@PathVariable @NotBlank code: String): GameDto {
+        return securedMatchMakingApi.startRoom(code)
     }
 
-    @PostMapping("/{id}/leave")
-    fun leaveRoom(@PathVariable @Min(1) id: Long) {
-        return securedMatchMakingApi.leaveRoom(id)
+    @PostMapping("/{code}/start/bots")
+    fun startRoomWithBots(@PathVariable @NotBlank code: String): GameDto {
+        return securedMatchMakingApi.startRoomWithBots(code)
+    }
+
+    @PostMapping("/{code}/leave")
+    fun leaveRoom(@PathVariable @NotBlank code: String) {
+        return securedMatchMakingApi.leaveRoom(code)
     }
 }

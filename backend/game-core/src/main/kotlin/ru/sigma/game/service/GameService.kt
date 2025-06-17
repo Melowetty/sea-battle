@@ -2,27 +2,28 @@ package ru.sigma.game.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.persistence.EntityNotFoundException
-import org.springframework.context.ApplicationEventPublisher
 import java.time.Instant
+import java.util.Timer
+import java.util.TimerTask
 import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import ru.sigma.common.context.UserAuthContextHolder
 import ru.sigma.common.model.Coordinate
 import ru.sigma.data.domain.entity.GameEntity
 import ru.sigma.data.domain.entity.GameResultEntity
 import ru.sigma.data.domain.entity.UserEntity
 import ru.sigma.data.domain.model.Event
-import ru.sigma.data.domain.model.ShipStatus
 import ru.sigma.data.domain.model.game.GameState
-import ru.sigma.data.domain.model.game.PlayerState
+import ru.sigma.data.extensions.UserExtensions.toDto
 import ru.sigma.data.repository.GameRepository
 import ru.sigma.data.repository.GameResultRepository
 import ru.sigma.data.repository.UserRepository
 import ru.sigma.domain.dto.GameDto
-import ru.sigma.domain.dto.PlayerDto
 import ru.sigma.domain.dto.ShotResultDto
+import ru.sigma.domain.exception.GameNotFoundException
 import ru.sigma.gamecore.domain.model.BotTurnEvent
-import java.util.Timer
-import java.util.TimerTask
 
 @Service
 class GameService(
@@ -36,33 +37,32 @@ class GameService(
 ) {
 
     fun startNewGame(
-        gameId: Long,
         players: Map<UUID, List<List<Coordinate>>>,
         size: Int
-    ) {
-        val state = initService.initGameState(gameId, players, size)
+    ): GameDto {
+        val state = initService.initGameState(players, size)
         val stateAsString = objectMapper.writeValueAsString(state)
 
         val game = GameEntity(
-            id = gameId,
             state = stateAsString,
             createdAt = Instant.now(),
             players = userRepository.findAllById(players.keys.toList()).toMutableSet()
         )
 
-        gameRepository.save(game)
+        val entity = gameRepository.save(game)
 
-        checkBotTurn(gameId, state)
+        checkBotTurn(entity.id, state)
+
+        return entity.toDto(getCurrentUserOrThrow().id)
     }
 
-    fun getCurrentGameInfo(
+    fun getGameInfo(
         gameId: Long,
-        userId: UUID
     ): GameDto {
-        return createGameDto(
-            gameId = gameId,
-            userId = userId
-        )
+        val user = getCurrentUserOrThrow()
+        val game = getGameOrThrow(gameId)
+
+        return game.toDto(user.id)
     }
 
     fun processTheShot(
@@ -82,8 +82,7 @@ class GameService(
         gameId: Long,
         gameState: GameState,
     ) {
-        val game: GameEntity = gameRepository.findById(gameId)
-            .orElseThrow { EntityNotFoundException("Entity not found with id: $gameId") }
+        val game = getGameOrThrow(gameId)
         val winner = userRepository.findById(getCurrentUser(gameState))
             .orElseThrow { EntityNotFoundException("Entity not found with id: ${getCurrentUser(gameState)}") }
 
@@ -144,33 +143,39 @@ class GameService(
     private fun loadGameState(
         gameId: Long
     ): GameState {
-        val game = gameRepository.findById(gameId)
-            .orElseThrow { EntityNotFoundException("Entity not found with id: $gameId") }
+        val game = getGameOrThrow(gameId)
 
         val gameState = objectMapper.readValue(game.state, GameState::class.java)
 
         return gameState
     }
 
-    private fun createGameDto(gameId: Long, userId: UUID): GameDto {
-        val game = gameRepository.findById(gameId)
-            .orElseThrow { EntityNotFoundException("Entity not found with id: $gameId") }
-
-        val gameState = loadGameState(gameId)
+    private fun GameEntity.toDto(userId: UUID): GameDto {
+        val gameState = objectMapper.readValue(state, GameState::class.java)
         val currentPlayer = gameState.players[1 - (gameState.round % 2)]
         val playerState = gameState.playersFields[userId]
             ?: throw IllegalStateException("Player state is null")
 
-        val players = game.players.map { user ->
-            PlayerDto(name = user.name, avatar = user.avatar)
+        val players = players.map { user ->
+            user.toDto()
         }
 
         return GameDto(
             players = players,
             currentPlayer = currentPlayer,
             playerState = playerState,
-            gameStartDate = game.createdAt
+            gameStartDate = createdAt
         )
+    }
 
+    private fun getGameOrThrow(gameId: Long): GameEntity {
+        return gameRepository.findById(gameId).getOrNull()
+            ?: throw GameNotFoundException("Game not found")
+    }
+
+    private fun getCurrentUserOrThrow(): UserEntity {
+        val userInfo = UserAuthContextHolder.get()
+        return userRepository.findById(userInfo.id).getOrNull()
+            ?: throw IllegalStateException("User not found")
     }
 }

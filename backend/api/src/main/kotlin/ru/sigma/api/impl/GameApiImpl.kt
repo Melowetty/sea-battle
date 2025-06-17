@@ -2,11 +2,15 @@ package ru.sigma.api.impl
 
 import org.springframework.stereotype.Component
 import ru.sigma.api.GameApi
+import ru.sigma.domain.dto.GameDto
+import ru.sigma.game.service.GameService
 
 @Component
-class GameApiImpl: GameApi {
-    override fun getGame(id: Long): Any {
-        throw NotImplementedError("Not implemented")
+class GameApiImpl(
+    private val gameService: GameService,
+): GameApi {
+    override fun getGame(id: Long): GameDto {
+        return gameService.getGameInfo(id)
     }
 
     override fun leaveGame(id: Long) {

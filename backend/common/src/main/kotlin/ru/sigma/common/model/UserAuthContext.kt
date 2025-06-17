@@ -4,5 +4,5 @@ import java.util.UUID
 
 data class UserAuthContext(
     val id: UUID,
-    val telegramId: Long,
+    val telegramId: Long?,
 )

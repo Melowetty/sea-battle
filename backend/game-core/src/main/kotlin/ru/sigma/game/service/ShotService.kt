@@ -1,21 +1,19 @@
 package ru.sigma.game.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.persistence.EntityNotFoundException
+import java.util.UUID
+import org.springframework.stereotype.Service
 import ru.sigma.common.model.Coordinate
 import ru.sigma.data.domain.model.Event
 import ru.sigma.data.domain.model.ShipStatus
 import ru.sigma.data.domain.model.game.GameState
 import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.repository.GameRepository
-import ru.sigma.data.repository.UserRepository
 import ru.sigma.domain.dto.ShotResultDto
-import java.util.UUID
-import kotlin.collections.plus
 
+@Service
 class ShotService (
     private val gameRepository: GameRepository,
-    private val objectMapper: ObjectMapper
 ) {
 
     fun checkShot(

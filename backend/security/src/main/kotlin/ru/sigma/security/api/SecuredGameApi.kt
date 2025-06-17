@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import ru.sigma.api.GameApi
+import ru.sigma.domain.dto.GameDto
 
 @Component
 class SecuredGameApi(
@@ -11,7 +12,7 @@ class SecuredGameApi(
     private val gameApi: GameApi
 ) : GameApi {
     @PreAuthorize("isAuthenticated()")
-    override fun getGame(id: Long): Any {
+    override fun getGame(id: Long): GameDto {
         println("from secured")
         return gameApi.getGame(id)
     }
