@@ -1,0 +1,41 @@
+:root{
+
+    --blur-radius: 15px;
+    --font-accent: "Pixelify Sans", sans-serif;
+    --font-base: "Inter", sans-serif;
+    --color-font-accent: #ff9933;
+    --color-font-base: white;
+
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6{
+    color: var(--color-font-accent);
+    font-family: var(--font-accent);
+    font-weight: 700;
+    -webkit-text-stroke: 1px black;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+p, label, input, span{
+    color: var(--color-font-base);
+    font-family: var(--font-base);
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+html{
+    cursor: url("../../assets/cursor/cursor.png"), auto;
+}
+
+body {
+    background: url("../../assets/images/background.gif") no-repeat fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+}

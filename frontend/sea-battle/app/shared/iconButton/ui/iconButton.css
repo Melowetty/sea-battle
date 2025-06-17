@@ -1,0 +1,39 @@
+.icon-btn{
+    padding: 10px 40px;
+    appearance: none;
+    outline: none;
+    border: none;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    user-select: none;
+}
+
+.icon-btn.telegram{
+    color: white;
+    background: #24A1DE;
+    transition: 0.4s ease-in-out;
+}
+
+.icon-btn:hover{
+    cursor: url("../../assets/cursor/pointer.png"), pointer;
+    filter: brightness(110%);
+    transform: scale(1.05);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.icon-btn:active{
+
+}
+
+.icon-btn-label{
+    font-size: 32px;
+}
+
+.icon-btn-icon{
+    width: 32px;
+    height: 32px;
+}

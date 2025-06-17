@@ -1,0 +1,9 @@
+.container-title {
+    font-size: 52px;
+}
+
+.pointer{
+    width: 64px;
+    height: 64px;
+    rotate: 90deg;
+}

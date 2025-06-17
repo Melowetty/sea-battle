@@ -1,0 +1,19 @@
+.header-container {
+    width: calc(100% - 40px);
+    padding: 10px 20px;
+    backdrop-filter: blur(var(--blur-radius));
+    background: rgba(255, 255, 255, 0.075);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.header-logo{
+    height: 70px;
+    cursor: url("../../assets/cursor/pointer.png"), pointer;
+    transition: 0.3s ease-out;
+    user-select: none;
+}
+
+.header-logo:hover{
+    transform: scale(1.2);
+    filter: brightness(120%);
+}
