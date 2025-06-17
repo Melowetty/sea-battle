@@ -6,6 +6,7 @@ import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import ru.sigma.common.model.UserAuthContext
 import ru.sigma.data.domain.entity.UserEntity
 import ru.sigma.data.repository.UserRepository
 import ru.sigma.security.Extensions.toUserInfo
@@ -19,6 +20,16 @@ class AuthService(
     @Value("\${spring.security.telegram.bot-token}")
     private val telegramBotToken: String
 ) {
+    fun validateAuthToken(token: String) = jwtService.verifyToken(token)
+
+    fun extractUserAuthContext(token: String): UserAuthContext {
+        val info = jwtService.getUserInfoFromToken(token)
+        return UserAuthContext(
+            id = info.id,
+            telegramId = info.telegramId
+        )
+    }
+
     fun authByTelegram(request: TelegramAuthRequest): AuthTokenResponse {
         require(!validateTelegramAuthRequest(request)) {
             "Invalid telegram auth request"
