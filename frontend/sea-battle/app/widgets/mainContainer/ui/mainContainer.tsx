@@ -1,4 +1,4 @@
-import styles from "./mainContainer.css";
+import "./mainContainer.css";
 
 export function MainContainer({ children }: { children: React.ReactNode }) {
 
