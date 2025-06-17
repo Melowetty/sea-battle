@@ -1,5 +1,6 @@
 import {MainContainer} from "~/widgets/mainContainer";
 import {IconButton} from "~/shared/iconButton";
+import {TelegramLoginButton} from "~/features/telegramAuth";
 import "./home.css";
 
 export function HomePage() {
@@ -8,10 +9,10 @@ export function HomePage() {
         <h1 className={'container-title'}>АВТ0РИЗАЦИЯ</h1>
         <div className={"description-container"}>
             <img className={"pointer"} src={"../../../assets/images/pointer.gif"} />
-            <span>Взять на абордаж!</span>
+            <span>Вступить в команду!</span>
             <img className={"pointer"} src={"../../../assets/images/pointer.gif"} />
         </div>
-        <IconButton style={"telegram"} icon={"../../../assets/images/telegram.PNG"} label={"Войти через Telegram"} />
+        <TelegramLoginButton />
     </MainContainer>
   );
 }

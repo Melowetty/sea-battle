@@ -1,13 +1,11 @@
-import styles from "./header.css";
+import  "./header.css";
 import {useNavigate} from "react-router";
-
-
 
 export function Header() {
   const navigate = useNavigate();
 
   const handleCLick = ()=> {
-      navigate("/");
+      // navigate("/");
     }
 
   return (
