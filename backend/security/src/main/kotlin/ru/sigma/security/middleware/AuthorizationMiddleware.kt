@@ -26,7 +26,7 @@ class AuthorizationMiddleware(
         filterChain: FilterChain
     ) {
         val headers = request.headerNames.toList().toSet()
-        val authHeader = headers.find { it == HttpHeaders.AUTHORIZATION }
+        val authHeader = headers.find { it.lowercase() == HttpHeaders.AUTHORIZATION.lowercase() }
         authHeader?.let {
             val token = request.getHeader(it).replace("Bearer ", "")
             val isValid = authService.validateAuthToken(token)
