@@ -1,6 +1,4 @@
-import "./iconButton.css";
-import {useNavigate} from "react-router";
-import {useEffect} from "react";
+import styles from "./iconButton.module.css";
 
 type buttonProps = {
     label?: string;
@@ -13,9 +11,9 @@ type buttonProps = {
 export function IconButton({label = "кнопка", style = "primary", ...props}: buttonProps) {
 
   return (
-        <button className={`icon-btn ${style}`} type={props.type} onClick={props.onClick}>
-            <img className={"icon-btn-icon"} src={props.icon} alt={"icon"} />
-            <span className={"icon-btn-label"}>{label}</span>
+        <button className={`${styles.iconBtn} ${styles[style]}`} type={props.type} onClick={props.onClick}>
+            <img className={`${styles.iconBtnIcon}`} src={props.icon} alt={"icon"} />
+            <span className={`${styles.iconBtnLabel}`}>{label}</span>
         </button>
   );
 }

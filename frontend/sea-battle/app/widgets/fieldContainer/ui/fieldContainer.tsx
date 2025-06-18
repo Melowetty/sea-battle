@@ -1,10 +1,10 @@
-import  "./fieldContainer.css";
+import styles from "./fieldContainer.module.css";
 import type {ReactNode} from "react";
 
 export function FieldContainer({children}: {children: ReactNode}) {
 
   return (
-    <div className="field-container">
+    <div>
         {children}
     </div>
   );

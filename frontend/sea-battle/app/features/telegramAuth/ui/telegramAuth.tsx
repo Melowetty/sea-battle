@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import "./telegramAuth.css";
+import styles from "./telegramAuth.module.css";
 import {loginUser} from "~/features/telegramAuth/model/auth";
 
 interface ITelegramUser {
@@ -45,6 +45,6 @@ export const TelegramLoginButton = () => {
         };
     }, []);
 
-    return <div id="telegram-btn-container" className={"telegram-btn-wrapper"}>
+    return <div id="telegram-btn-container" className={`${styles.telegramBtnWrapper}`}>
     </div>;
 };

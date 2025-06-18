@@ -1,10 +1,15 @@
-import  "./overlayComponent.css";
+import styles from "./overlayComponent.module.css";
 
-export function OverlayComponent({classOverlay, classLogo}) {
+type overlayProps = {
+    classOverlay?:string,
+    classLogo?: string,
+}
+
+export function OverlayComponent({classOverlay, classLogo}:overlayProps) {
 
   return (
-      <div className={`overlay-component ${classOverlay}`}>
-        <img className={`overlay-logo ${classLogo}`} src={"../../../../assets/images/logo.png"} alt="seabattle" />
+      <div className={`${styles.overlayComponent} ${classOverlay}`}>
+        <img className={`${styles.overlayLogo} ${classLogo}`} src={"../../../../assets/images/logo.png"} alt="seabattle" />
       </div>
   );
 }
