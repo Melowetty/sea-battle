@@ -1,1 +1,1 @@
-export {PlayPage} from "./ui/about";
+export {PlayPage} from "./ui/play";

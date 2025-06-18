@@ -1,0 +1,13 @@
+.container-title {
+    font-size: 52px;
+}
+
+.play-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 250px;
+}
+
+.animation{
+    height: 100px;
+}
