@@ -1,0 +1,1 @@
+export {WinPage} from "./ui/win";

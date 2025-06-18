@@ -5,4 +5,6 @@ export default [
     route("/menu", "routes/menu.tsx"),
     route("/about", "routes/about.tsx"),
     route("/play", "routes/play.tsx"),
+    route("/win", "routes/win.tsx"),
+    route("/lose", "routes/lose.tsx"),
 ] satisfies RouteConfig;

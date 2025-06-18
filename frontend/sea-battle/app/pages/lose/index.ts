@@ -1,0 +1,1 @@
+export {LosePage} from "./ui/lose";

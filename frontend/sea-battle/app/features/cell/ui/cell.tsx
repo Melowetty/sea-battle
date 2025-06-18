@@ -5,6 +5,7 @@ type CellProps = {
   variant?: "empty" | "ship" | "miss" | "checked" | "space" | "enemy";
   x: number;
   y: number;
+  onClick?: () => void;
 }
 
 export function Cell({variant = "empty", ...props}: CellProps): ReactNode {

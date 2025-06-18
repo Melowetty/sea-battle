@@ -20,3 +20,27 @@
     justify-content: center;
     gap: 20px;
 }
+
+.turn-active{
+    font-size: 50px;
+    color: chartreuse;
+    animation: 1s turn-active linear infinite;
+}
+
+.turn-wait{
+    color: red;
+}
+
+@keyframes turn-active {
+    from {
+        color: chartreuse;
+    }
+
+    50%{
+        color: white;
+    }
+
+    to{
+        color: chartreuse;
+    }
+}

@@ -5,8 +5,22 @@ import {PlayerField} from "~/features/playerField";
 import {EnemyField} from "~/features/enemyField";
 import {DialogWindow} from "~/shared/dialog";
 import {Header} from "~/widgets/header";
+import {useEffect} from "react";
 
 export function PlayPage() {
+
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            e.preventDefault();
+            return e.returnValue = 'Вы уверены, что хотите обновить страницу?';
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
 
   return (
       <>
@@ -18,8 +32,8 @@ export function PlayPage() {
                     <PlayerField />
                 </FieldContainer>
                 <div className={`${styles.statsContainer}`}>
-                    <h1>
-                        Ваш ход
+                    <h1 className={styles.turnActive}>
+                        ВАШ Х0Д!
                     </h1>
                     <DialogWindow
                         confirm={"Завершить"}
