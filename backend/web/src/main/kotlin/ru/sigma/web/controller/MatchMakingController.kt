@@ -5,9 +5,9 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework  .web.bind.annotation.RestController
 import ru.sigma.common.dto.RoomDto
-import ru.sigma.domain.dto.GameDto
+import ru.sigma.game.domain.dto.GameDto
 import ru.sigma.security.api.SecuredMatchMakingApi
 
 @RestController

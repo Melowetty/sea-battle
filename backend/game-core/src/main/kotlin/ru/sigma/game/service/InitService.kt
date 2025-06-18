@@ -50,6 +50,7 @@ class InitService {
         return PlayerState(
             player = thisPlayer,
             ships = ships,
+            destructions = emptyList(),
             hits = emptyList(),
             misses = emptyList(),
             aliveShips = ships.size

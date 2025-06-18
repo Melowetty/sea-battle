@@ -1,7 +1,7 @@
 package ru.sigma.api
 
 import ru.sigma.common.dto.RoomDto
-import ru.sigma.domain.dto.GameDto
+import ru.sigma.game.domain.dto.GameDto
 
 interface MatchMakingApi {
     fun getRoom(code: String): RoomDto
