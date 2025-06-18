@@ -6,8 +6,11 @@ import {EnemyField} from "~/features/enemyField";
 import {DialogWindow} from "~/shared/dialog";
 import {Header} from "~/widgets/header";
 import {useEffect} from "react";
+import {useNavigate} from "react-router";
 
 export function PlayPage() {
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleBeforeUnload = (e) => {
@@ -39,7 +42,8 @@ export function PlayPage() {
                         confirm={"Завершить"}
                         title={"Завершение игры"}
                         description={"Вы уверены, что хотите завершить игру?"}
-                        label="Завершить игру" />
+                        label="Завершить игру"
+                        onClick={() => {navigate("/lose")}} />
                 </div>
                 <FieldContainer>
                     <h1 className={`${styles.containerTitle}`}>Поле соперника</h1>

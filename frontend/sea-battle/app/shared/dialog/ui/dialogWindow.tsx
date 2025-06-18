@@ -19,7 +19,7 @@ export function DialogWindow({label = "кнопка", title = "заголово�
   return (
       <Dialog.Root>
           <Dialog.Trigger asChild={true}>
-              <Button label={label} onClick={props.onClick} />
+              <Button label={label} />
           </Dialog.Trigger>
           <Dialog.Portal>
               <Dialog.Overlay className={`${styles.dialogOverlay}`} />
@@ -35,7 +35,7 @@ export function DialogWindow({label = "кнопка", title = "заголово�
                           <Button variant={"secondary"} label={"0тмена"} onClick={() => {}} />
                       </Dialog.Close>
                       <Dialog.Close asChild={true}>
-                          <Button label={confirm} onClick={() => {navigate("/menu")}} />
+                          <Button label={confirm} onClick={props.onClick} />
                       </Dialog.Close>
                   </div>
               </Dialog.Content>
