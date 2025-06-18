@@ -1,4 +1,4 @@
-package ru.sigma.gamecore.service
+package ru.sigma.game.service
 
 import ru.sigma.data.domain.model.ShipStatus
 import ru.sigma.data.domain.model.game.GameState

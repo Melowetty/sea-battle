@@ -1,4 +1,4 @@
-package ru.sigma.gamecore.domain.model
+package ru.sigma.game.domain.model
 
 import ru.sigma.data.domain.model.game.PlayerState
 import java.util.UUID

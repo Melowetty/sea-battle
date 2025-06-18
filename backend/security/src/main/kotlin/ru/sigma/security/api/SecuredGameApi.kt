@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import ru.sigma.api.GameApi
-import ru.sigma.domain.dto.GameDto
+import ru.sigma.game.domain.dto.GameDto
 
 @Component
 class SecuredGameApi(

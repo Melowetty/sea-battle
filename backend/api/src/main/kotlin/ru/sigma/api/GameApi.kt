@@ -1,6 +1,6 @@
 package ru.sigma.api
 
-import ru.sigma.domain.dto.GameDto
+import ru.sigma.game.domain.dto.GameDto
 
 interface GameApi {
     fun getGame(id: Long): GameDto

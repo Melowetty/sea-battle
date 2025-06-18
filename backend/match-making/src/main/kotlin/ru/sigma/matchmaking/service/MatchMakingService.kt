@@ -9,7 +9,7 @@ import ru.sigma.data.domain.entity.UserEntity
 import ru.sigma.data.extensions.RoomExtensions.toDto
 import ru.sigma.data.repository.RoomRepository
 import ru.sigma.data.repository.UserRepository
-import ru.sigma.domain.dto.GameDto
+import ru.sigma.game.domain.dto.GameDto
 import ru.sigma.game.service.GameService
 import ru.sigma.matchmaking.exception.RoomNotFoundException
 

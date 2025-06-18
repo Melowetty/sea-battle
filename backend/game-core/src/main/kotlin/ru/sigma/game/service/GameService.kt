@@ -20,10 +20,9 @@ import ru.sigma.data.extensions.UserExtensions.toDto
 import ru.sigma.data.repository.GameRepository
 import ru.sigma.data.repository.GameResultRepository
 import ru.sigma.data.repository.UserRepository
-import ru.sigma.domain.dto.GameDto
-import ru.sigma.domain.dto.ShotResultDto
-import ru.sigma.domain.exception.GameNotFoundException
-import ru.sigma.gamecore.domain.model.BotTurnEvent
+import ru.sigma.game.domain.dto.GameDto
+import ru.sigma.game.domain.dto.ShotResultDto
+import ru.sigma.game.domain.exception.GameNotFoundException
 
 @Service
 class GameService(
@@ -135,7 +134,7 @@ class GameService(
     ) {
         Timer().schedule(object : TimerTask() {
             override fun run() {
-                eventPublisher.publishEvent(BotTurnEvent(gameId, botId))
+//                eventPublisher.publishEvent(BotTurnEvent(gameId, botId))
             }
         }, 5000)
     }

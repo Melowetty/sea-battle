@@ -9,7 +9,7 @@ import ru.sigma.data.domain.model.ShipStatus
 import ru.sigma.data.domain.model.game.GameState
 import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.repository.GameRepository
-import ru.sigma.domain.dto.ShotResultDto
+import ru.sigma.game.domain.dto.ShotResultDto
 
 @Service
 class ShotService (

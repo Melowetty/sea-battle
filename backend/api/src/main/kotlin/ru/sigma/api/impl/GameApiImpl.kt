@@ -2,7 +2,7 @@ package ru.sigma.api.impl
 
 import org.springframework.stereotype.Component
 import ru.sigma.api.GameApi
-import ru.sigma.domain.dto.GameDto
+import ru.sigma.game.domain.dto.GameDto
 import ru.sigma.game.service.GameService
 
 @Component

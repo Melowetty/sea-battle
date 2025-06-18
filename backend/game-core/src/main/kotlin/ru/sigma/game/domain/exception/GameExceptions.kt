@@ -1,4 +1,4 @@
-package ru.sigma.domain.exception
+package ru.sigma.game.domain.exception
 
 import ru.sigma.common.exception.NotFoundException
 
