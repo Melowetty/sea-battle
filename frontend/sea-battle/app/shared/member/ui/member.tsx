@@ -1,4 +1,4 @@
-import "./member.css";
+import styles from "./member.module.css";
 
 type memberProps = {
     name: string;
@@ -9,10 +9,10 @@ type memberProps = {
 export function Member({...props}: memberProps) {
 
   return (
-        <div className="member-container">
-            <img className="member-image" src={props.image} alt="image" />
-            <span className="member-name">{props.name}</span>
-            <span className="member-role">{props.role}</span>
+        <div className={`${styles.memberContainer}`}>
+            <img className={`${styles.memberImage}`} src={props.image} alt="image" />
+            <span className={`${styles.memberName}`}>{props.name}</span>
+            <span className={`${styles.memberRole}`}>{props.role}</span>
         </div>
   );
 }

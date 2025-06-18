@@ -1,10 +1,11 @@
-import  "./cell.css";
+import styles from "./cell.module.css";
 import type {ReactNode} from "react";
 
 type CellProps = {
   variant?: "empty" | "ship" | "miss" | "checked" | "space" | "enemy";
   x: number;
   y: number;
+  onClick?: () => void;
 }
 
 export function Cell({variant = "empty", ...props}: CellProps): ReactNode {
@@ -13,9 +14,9 @@ export function Cell({variant = "empty", ...props}: CellProps): ReactNode {
     console.log(x, y, variant);
     const cell = document.getElementById(`${x}${y}enemy`);
     if (cell) {
-      cell.className = cell.className.replace("enemy", "miss");
+      cell.className = cell.className.replace(`${styles[variant]}`, `${styles.miss}`);
       cell.innerHTML = `<img src="../../../../assets/images/circle.png" alt="⚫"/>`;
-      // cell.className = cell.className.replace("enemy", "checked");
+      // cell.className = cell.className.replace(`${styles[variant]}`, `${styles.checked}`);
       // cell.innerHTML = `<img src="../../../../assets/images/red_cross.png" alt="❌"/>`;
     }
   }
@@ -25,7 +26,7 @@ export function Cell({variant = "empty", ...props}: CellProps): ReactNode {
         data-x={props.x}
         data-y={props.y}
         id={`${props.x}${props.y}${variant}`}
-        className={`cell ${variant}`}
+        className={`${styles.cell} ${styles[variant]}`}
         onClick={variant === "enemy" ? () => handleEnemy(props.x, props.y) : () => {}}>
     </th>
   );

@@ -1,4 +1,4 @@
-import "./mainContainer.css";
+import styles from "./mainContainer.module.css";
 
 type props={
     children: React.ReactNode,
@@ -9,8 +9,9 @@ type props={
 export function MainContainer({ children, classMain, classContent}: props) {
 
   return (
-        <div className={`main-container ${classMain}`} >
-            <div className={`content-container ${classContent}`}>
+        <div className={`${styles.mainContainer} ${classMain}`} >
+            <div className={`${styles.contentContainer} ${classContent}`}>
+                <img className={styles.star} src={'../../../../assets/images/star.png'} alt={"star"}/>
                 {children}
             </div>
         </div>

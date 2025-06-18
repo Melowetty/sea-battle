@@ -1,4 +1,4 @@
-import "./button.css";
+import styles from "./button.module.css";
 
 type buttonProps = {
     label?: string;
@@ -10,8 +10,8 @@ type buttonProps = {
 export function Button({label = "кнопка", variant = "primary", ...props}: buttonProps) {
 
   return (
-        <button className={`btn ${variant}`} type={props.type} onClick={props.onClick}>
-            <span className={"btn-label"}>{label}</span>
+        <button className={`${styles.btn} ${styles[variant]}`} type={props.type} onClick={props.onClick}>
+            <span className={`${styles.btnLabel}`}>{label}</span>
         </button>
   );
 }

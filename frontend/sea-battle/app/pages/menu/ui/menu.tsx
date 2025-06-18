@@ -11,7 +11,7 @@ export function MenuPage() {
 
   return (
       <>
-        <Header />
+        {/*<Header />*/}
         <MainContainer>
             <h1 className={styles.containerTitle}>МЕНЮ</h1>
             <Button onClick={() => {navigate("/play")}} label={"Начать игру"} />

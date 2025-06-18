@@ -1,7 +1,11 @@
-import  "./header.css";
+import styles from "./header.module.css";
 import {useNavigate} from "react-router";
 
-export function Header({classHeader}) {
+type headerProps = {
+    classHeader?: string;
+}
+
+export function Header({classHeader}: headerProps) {
 
   const navigate = useNavigate();
 
@@ -10,8 +14,8 @@ export function Header({classHeader}) {
     }
 
   return (
-    <header className={`header-container ${classHeader}`}>
-      <img onClick={handleCLick} className={"header-logo"} src={"../../../../assets/images/logo.png"} alt="seabattle" />
+    <header className={`${styles.headerContainer} ${classHeader}`}>
+      <img onClick={handleCLick} className={`${styles.headerLogo}`} src={"../../../../assets/images/logo.png"} alt="seabattle" />
     </header>
   );
 }

@@ -1,4 +1,4 @@
-import "./dialogWindow.css";
+import styles from "./dialogWindow.module.css";
 import {Dialog} from "radix-ui";
 import {Button} from "~/shared/button";
 import {useNavigate} from "react-router";
@@ -19,23 +19,23 @@ export function DialogWindow({label = "кнопка", title = "заголово�
   return (
       <Dialog.Root>
           <Dialog.Trigger asChild={true}>
-              <Button label={label} onClick={props.onClick} />
+              <Button label={label} />
           </Dialog.Trigger>
           <Dialog.Portal>
-              <Dialog.Overlay className={"dialog-overlay"} />
-              <Dialog.Content className="dialog-content">
-                  <Dialog.Title className={"dialog-title"}>
+              <Dialog.Overlay className={`${styles.dialogOverlay}`} />
+              <Dialog.Content className={`${styles.dialogContent}`}>
+                  <Dialog.Title className={`${styles.dialogTitle}`}>
                       {title}
                   </Dialog.Title>
-                  <Dialog.Description className={"dialog-description"}>
+                  <Dialog.Description className={`${styles.dialogDescription}`}>
                       {description}
                   </Dialog.Description>
-                  <div className="dialog-buttons">
+                  <div className={`${styles.dialogButtons}`}>
                       <Dialog.Close asChild={true}>
                           <Button variant={"secondary"} label={"0тмена"} onClick={() => {}} />
                       </Dialog.Close>
                       <Dialog.Close asChild={true}>
-                          <Button label={confirm} onClick={() => {navigate("/menu")}} />
+                          <Button label={confirm} onClick={props.onClick} />
                       </Dialog.Close>
                   </div>
               </Dialog.Content>

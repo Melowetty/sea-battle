@@ -1,36 +1,52 @@
 import {MainContainer} from "~/widgets/mainContainer";
-import "./play.css";
-import {Button} from "~/shared/button";
-import {useNavigate} from "react-router";
+import styles from "./play.module.css";
 import {FieldContainer} from "~/widgets/fieldContainer";
 import {PlayerField} from "~/features/playerField";
 import {EnemyField} from "~/features/enemyField";
 import {DialogWindow} from "~/shared/dialog";
 import {Header} from "~/widgets/header";
+import {useEffect} from "react";
+import {useNavigate} from "react-router";
 
 export function PlayPage() {
 
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            e.preventDefault();
+            return e.returnValue = 'Вы уверены, что хотите обновить страницу?';
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
   return (
       <>
-        <Header />
+        {/*<Header />*/}
         <MainContainer>
-            <div className="play-container">
+            <div className={`${styles.playContainer}`}>
                 <FieldContainer>
-                    <h1 className={'container-title'}>Ваше поле</h1>
+                    <h1 className={`${styles.containerTitle}`}>Ваше поле</h1>
                     <PlayerField />
                 </FieldContainer>
-                <div className={'stats-container'}>
-                    <h1>
-                        Ваш ход
+                <div className={`${styles.statsContainer}`}>
+                    <h1 className={styles.turnActive}>
+                        ВАШ Х0Д!
                     </h1>
                     <DialogWindow
                         confirm={"Завершить"}
                         title={"Завершение игры"}
                         description={"Вы уверены, что хотите завершить игру?"}
-                        label="Завершить игру" />
+                        label="Завершить игру"
+                        onClick={() => {navigate("/lose")}} />
                 </div>
                 <FieldContainer>
-                    <h1 className={'container-title'}>Поле соперника</h1>
+                    <h1 className={`${styles.containerTitle}`}>Поле соперника</h1>
                     <EnemyField />
                 </FieldContainer>
             </div>

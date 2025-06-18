@@ -1,5 +1,4 @@
-import  "./playerField.css";
-import type {ReactNode} from "react";
+import styles from "./playerField.module.css";
 import {FieldBorder} from "~/features/fieldBorder";
 import {Cell} from "~/features/cell";
 
