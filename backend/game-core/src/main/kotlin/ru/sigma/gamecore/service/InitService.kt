@@ -1,4 +1,4 @@
-package ru.sigma.game.service
+package ru.sigma.gamecore.service
 
 import ru.sigma.data.domain.model.ShipStatus
 import ru.sigma.data.domain.model.game.GameState
@@ -52,6 +52,7 @@ class InitService {
         return PlayerState(
             player = thisPlayer,
             ships = ships,
+            destructions = emptyList(),
             hits = emptyList(),
             misses = emptyList(),
             aliveShips = ships.size

@@ -1,4 +1,4 @@
-package ru.sigma.domain.dto
+package ru.sigma.gamecore.domain.dto
 
 import ru.sigma.data.domain.model.game.PlayerState
 import java.time.Instant

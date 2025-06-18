@@ -1,8 +1,10 @@
 package ru.sigma.gamecore.domain.model
 
+import ru.sigma.data.domain.model.game.PlayerState
 import java.util.UUID
 
 data class BotTurnEvent (
-    val gameId: Long,
+    val targetState: PlayerState,
+    val size: Int,
     val botId: UUID
 )

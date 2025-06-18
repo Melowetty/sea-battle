@@ -1,4 +1,4 @@
-package ru.sigma.game.service
+package ru.sigma.gamecore.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.persistence.EntityNotFoundException
@@ -9,17 +9,14 @@ import org.springframework.stereotype.Service
 import ru.sigma.common.model.Coordinate
 import ru.sigma.data.domain.entity.GameEntity
 import ru.sigma.data.domain.entity.GameResultEntity
-import ru.sigma.data.domain.entity.UserEntity
 import ru.sigma.data.domain.model.Event
-import ru.sigma.data.domain.model.ShipStatus
 import ru.sigma.data.domain.model.game.GameState
-import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.repository.GameRepository
 import ru.sigma.data.repository.GameResultRepository
 import ru.sigma.data.repository.UserRepository
-import ru.sigma.domain.dto.GameDto
-import ru.sigma.domain.dto.PlayerDto
-import ru.sigma.domain.dto.ShotResultDto
+import ru.sigma.gamecore.domain.dto.GameDto
+import ru.sigma.gamecore.domain.dto.PlayerDto
+import ru.sigma.gamecore.domain.dto.ShotResultDto
 import ru.sigma.gamecore.domain.model.BotTurnEvent
 import java.util.Timer
 import java.util.TimerTask
@@ -105,14 +102,13 @@ class GameService(
         event: Event,
         gameState: GameState
     ) {
-        if (event == Event.ALL_DESTRUCTION) { // если текущий игрок всех победил
-            processTheVictory(gameId, gameState)
-        }
-        else {
-            if (event == Event.MISS) { // если был промах, то раунд сменится
+        when (event) {
+            Event.ALL_DESTRUCTION -> processTheVictory(gameId, gameState) // если текущий игрок всех победил
+            Event.MISS -> { // если был промах, то раунд сменится
                 gameState.round++ // перееход на следующий раунд, соответвенно ход другого игрока
                 checkBotTurn(gameId, gameState)
             }
+            else -> print("event not found")
         }
     }
 
@@ -134,9 +130,13 @@ class GameService(
         gameId: Long,
         botId: UUID
     ) {
+        val gameState = loadGameState(gameId)
+        val targetPlayer = gameState.players[(gameState.round % 2)]
+        val targetPlayerField = gameState.playersFields.getValue(targetPlayer)
+        val size = gameState.fieldSize
         Timer().schedule(object : TimerTask() {
             override fun run() {
-                eventPublisher.publishEvent(BotTurnEvent(gameId, botId))
+                eventPublisher.publishEvent(BotTurnEvent(targetPlayerField, size, botId))
             }
         }, 5000)
     }
