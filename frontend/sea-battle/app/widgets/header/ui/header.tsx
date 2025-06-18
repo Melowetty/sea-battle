@@ -5,7 +5,7 @@ export function Header() {
   const navigate = useNavigate();
 
   const handleCLick = ()=> {
-      // navigate("/");
+      navigate("/menu");
     }
 
   return (
