@@ -19,8 +19,8 @@ open class UserEntity(
     @Column(name = "id")
     val id: UUID = UUID.randomUUID(),
 
-    @Column(name = "telegram_id", nullable = false, unique = true)
-    val telegramId: Long,
+    @Column(name = "telegram_id")
+    val telegramId: Long?,
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)

@@ -1,36 +1,55 @@
 package ru.sigma.security.api
 
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import ru.sigma.api.MatchMakingApi
+import ru.sigma.common.dto.RoomDto
+import ru.sigma.domain.dto.GameDto
 
 @Component
 class SecuredMatchMakingApi(
     @Qualifier("matchMakingApiImpl")
     private val matchMakingApi: MatchMakingApi
 ) : MatchMakingApi {
-    override fun joinRandomRoom() {
+    override fun getRoom(code: String): RoomDto {
+        println("from secured")
+        return matchMakingApi.getRoom(code)
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    override fun joinRandomRoom(): RoomDto {
         println("from secured")
         return matchMakingApi.joinRandomRoom()
     }
 
-    override fun joinRoom(code: String) {
+    @PreAuthorize("isAuthenticated()")
+    override fun joinRoom(code: String): RoomDto {
         println("from secured")
         return matchMakingApi.joinRoom(code)
     }
 
-    override fun createRoom(request: Any) {
+    @PreAuthorize("isAuthenticated()")
+    override fun createRoom(): RoomDto {
         println("from secured")
-        return matchMakingApi.createRoom(request)
+        return matchMakingApi.createRoom()
     }
 
-    override fun startRoom(roomId: Long) {
+    @PreAuthorize("isAuthenticated()")
+    override fun startRoom(code: String): GameDto {
         println("from secured")
-        return matchMakingApi.startRoom(roomId)
+        return matchMakingApi.startRoom(code)
     }
 
-    override fun leaveRoom(roomId: Long) {
+    @PreAuthorize("isAuthenticated()")
+    override fun startRoomWithBots(code: String): GameDto {
         println("from secured")
-        return matchMakingApi.leaveRoom(roomId)
+        return matchMakingApi.startRoomWithBots(code)
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    override fun leaveRoom(code: String) {
+        println("from secured")
+        return matchMakingApi.leaveRoom(code)
     }
 }

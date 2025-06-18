@@ -5,7 +5,6 @@ import java.util.UUID
 import ru.sigma.common.model.Coordinate
 
 data class GameState(
-    val gameId: Long,
     var round: Int, // какой сейчас раунд
     val playersFields: Map<UUID, PlayerState>, // игроки и их поля
     val fieldSize: Int, // размер поля

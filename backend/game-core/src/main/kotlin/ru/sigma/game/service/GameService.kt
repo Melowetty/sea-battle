@@ -3,16 +3,27 @@ package ru.sigma.game.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.persistence.EntityNotFoundException
 import java.time.Instant
+import java.util.Timer
+import java.util.TimerTask
 import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import ru.sigma.common.context.UserAuthContextHolder
 import ru.sigma.common.model.Coordinate
 import ru.sigma.data.domain.entity.GameEntity
+import ru.sigma.data.domain.entity.GameResultEntity
+import ru.sigma.data.domain.entity.UserEntity
 import ru.sigma.data.domain.model.Event
-import ru.sigma.data.domain.model.ShipStatus
 import ru.sigma.data.domain.model.game.GameState
-import ru.sigma.data.domain.model.game.PlayerState
+import ru.sigma.data.extensions.UserExtensions.toDto
 import ru.sigma.data.repository.GameRepository
+import ru.sigma.data.repository.GameResultRepository
 import ru.sigma.data.repository.UserRepository
+import ru.sigma.domain.dto.GameDto
+import ru.sigma.domain.dto.ShotResultDto
+import ru.sigma.domain.exception.GameNotFoundException
+import ru.sigma.gamecore.domain.model.BotTurnEvent
 
 @Service
 class GameService(
@@ -20,103 +31,151 @@ class GameService(
     private val gameRepository: GameRepository,
     private val userRepository: UserRepository,
     private val objectMapper: ObjectMapper,
+    private val shotService: ShotService,
+    private val gameResultRepository: GameResultRepository,
+    private val eventPublisher: ApplicationEventPublisher
 ) {
 
     fun startNewGame(
-        gameId: Long,
         players: Map<UUID, List<List<Coordinate>>>,
         size: Int
-    ) {
-        val state = initService.initGameState(gameId, players, size)
+    ): GameDto {
+        val state = initService.initGameState(players, size)
         val stateAsString = objectMapper.writeValueAsString(state)
 
         val game = GameEntity(
-            id = gameId,
             state = stateAsString,
             createdAt = Instant.now(),
             players = userRepository.findAllById(players.keys.toList()).toMutableSet()
         )
 
-        gameRepository.save(game)
+        val entity = gameRepository.save(game)
+
+        checkBotTurn(entity.id, state)
+
+        return entity.toDto(getCurrentUserOrThrow().id)
     }
 
-    fun checkShot(
+    fun getGameInfo(
+        gameId: Long,
+    ): GameDto {
+        val user = getCurrentUserOrThrow()
+        val game = getGameOrThrow(gameId)
+
+        return game.toDto(user.id)
+    }
+
+    fun processTheShot(
         gameId: Long,
         shot: Coordinate
-    ): Map<Event, PlayerState>? {
-        val gameState = loadGameState(gameId)
-        val (currentPlayerId, targetPlayerId) = getCurrentAndTargetPlayerIds(gameState)
+    ): ShotResultDto {
+        val gameState = loadGameState(gameId) // полуеаем текущее состояние игры по id
 
-        val targetPlayerState = gameState.playersFields[targetPlayerId]
-            ?: throw IllegalStateException("Target player state is null")
+        val result = shotService.checkShot(gameId, gameState, shot) // делаем выстрел и получаем результат
 
-        val event = defineAnEvent(
-            enemyPlayerState = targetPlayerState,
-            shotCoordinate = shot
-        )
+        calculateNextMove(gameId,  result.event, gameState)
 
-        recordShotHistory(
-            gameState = gameState,
-            shooterId = currentPlayerId,
-            shot = shot,
-            event = event
-        )
-
-        gameState.round++ // перееход на следующий раунд
-
-        gameRepository.save(
-            gameRepository.findById(gameId)
-                .orElseThrow { EntityNotFoundException("Entity not found with id: $gameId") }
-        )
-
-        return mapOf(event to targetPlayerState)
+        return result // возвращаем рещультат выстрела
     }
 
-    private fun loadGameState(gameId: Long): GameState {
-        val game = gameRepository.findById(gameId)
-            .orElseThrow { EntityNotFoundException("Entity not found with id: $gameId") }
+    fun processTheVictory(
+        gameId: Long,
+        gameState: GameState,
+    ) {
+        val game = getGameOrThrow(gameId)
+        val winner = userRepository.findById(getCurrentUser(gameState))
+            .orElseThrow { EntityNotFoundException("Entity not found with id: ${getCurrentUser(gameState)}") }
+
+        gameResultRepository.save(GameResultEntity(
+            id =  gameId,
+            winner = winner,
+            startedAt = game.createdAt,
+            endAt = Instant.now(),
+            players = game.players,
+        ))
+        gameRepository.deleteById(gameId)
+
+    }
+
+    private fun getCurrentUser(game: GameState): UUID = game.players[1 - (game.round % 2)]
+
+    private fun calculateNextMove(
+        gameId: Long,
+        event: Event,
+        gameState: GameState
+    ) {
+        if (event == Event.ALL_DESTRUCTION) { // если текущий игрок всех победил
+            processTheVictory(gameId, gameState)
+        }
+        else {
+            if (event == Event.MISS) { // если был промах, то раунд сменится
+                gameState.round++ // перееход на следующий раунд, соответвенно ход другого игрока
+                checkBotTurn(gameId, gameState)
+            }
+        }
+    }
+
+    private fun checkBotTurn(
+        gameId: Long,
+        gameState: GameState
+    ) {
+        val nextRoundUserId = gameState.players[1 - (gameState.round % 2)]
+        val currentPlayer = userRepository.findById(nextRoundUserId)
+            .orElseThrow { EntityNotFoundException("Entity not found with id: $nextRoundUserId") }
+
+        if (currentPlayer.isBot) { // проверяем не ход ли бота сейчас
+            callBot(gameId, nextRoundUserId) //вызываем ход бота
+        }
+
+    }
+
+    private fun callBot(
+        gameId: Long,
+        botId: UUID
+    ) {
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                eventPublisher.publishEvent(BotTurnEvent(gameId, botId))
+            }
+        }, 5000)
+    }
+
+    private fun loadGameState(
+        gameId: Long
+    ): GameState {
+        val game = getGameOrThrow(gameId)
 
         val gameState = objectMapper.readValue(game.state, GameState::class.java)
 
         return gameState
     }
 
-    private fun getCurrentAndTargetPlayerIds(gameState: GameState): Pair<UUID, UUID> {
-        val round = gameState.round
-        val currentPlayerId = gameState.players[1 - (round % 2)]
-        val targetPlayerId = gameState.players[round % 2]
-        return currentPlayerId to targetPlayerId
-    }
+    private fun GameEntity.toDto(userId: UUID): GameDto {
+        val gameState = objectMapper.readValue(state, GameState::class.java)
+        val currentPlayer = gameState.players[1 - (gameState.round % 2)]
+        val playerState = gameState.playersFields[userId]
+            ?: throw IllegalStateException("Player state is null")
 
-    private fun recordShotHistory(
-        gameState: GameState,
-        shooterId: UUID,
-        shot: Coordinate,
-        event: Event
-    ) {
-        gameState.history += "$shooterId shot at $shot: $event"
-    }
-
-    private fun defineAnEvent(
-        enemyPlayerState: PlayerState,
-        shotCoordinate: Coordinate
-    ): Event {
-        var event = Event.MISS
-
-        enemyPlayerState.ships.forEach { ship ->
-            if (shotCoordinate in ship.coordinates) {
-                enemyPlayerState.hits += shotCoordinate
-                ship.healthPoints--
-                event = Event.HIT
-
-                if (ship.healthPoints == 0) {
-                    ship.status = ShipStatus.DEAD
-                    enemyPlayerState.aliveShips--
-                    event = Event.DESTRUCTION
-                }
-            }
+        val players = players.map { user ->
+            user.toDto()
         }
 
-        return event
+        return GameDto(
+            players = players,
+            currentPlayer = currentPlayer,
+            playerState = playerState,
+            gameStartDate = createdAt
+        )
+    }
+
+    private fun getGameOrThrow(gameId: Long): GameEntity {
+        return gameRepository.findById(gameId).getOrNull()
+            ?: throw GameNotFoundException("Game not found")
+    }
+
+    private fun getCurrentUserOrThrow(): UserEntity {
+        val userInfo = UserAuthContextHolder.get()
+        return userRepository.findById(userInfo.id).getOrNull()
+            ?: throw IllegalStateException("User not found")
     }
 }
