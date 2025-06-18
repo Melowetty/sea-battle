@@ -7,5 +7,10 @@ export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   server: {
     allowedHosts: true,
+  },
+  css: {
+    modules: {
+      localsConvention: 'camelCase' // или 'dashes'
+    }
   }
   });

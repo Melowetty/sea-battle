@@ -6,11 +6,13 @@ import {FieldContainer} from "~/widgets/fieldContainer";
 import {PlayerField} from "~/features/playerField";
 import {EnemyField} from "~/features/enemyField";
 import {DialogWindow} from "~/shared/dialog";
+import {Header} from "~/widgets/header";
 
 export function PlayPage() {
 
   return (
       <>
+        <Header />
         <MainContainer>
             <div className="play-container">
                 <FieldContainer>

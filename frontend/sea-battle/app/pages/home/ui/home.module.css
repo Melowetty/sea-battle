@@ -1,0 +1,84 @@
+.container-title {
+    font-size: 52px;
+}
+
+.pointer{
+    width: 64px;
+    height: 64px;
+    rotate: 90deg;
+}
+
+.description-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    span{
+        font-size: 32px;
+        text-shadow: 0 0 30px #000;
+        color: white;
+        font-family: "Pixelify Sans", sans-serif;
+    }
+
+}
+
+.main-container, .header-container, .content-container {
+    animation: other ease-in-out 3s forwards;
+    animation-delay: 3s;
+    will-change: backdrop-filter;
+    opacity: 0;
+}
+
+.content-container {
+    background: url("../../../../assets/images/frame.PNG") no-repeat;
+    background-size: contain;
+    box-shadow: none;
+    height: 350px;
+    width: 500px;
+    padding: 30px 75px 50px 65px;
+}
+
+.overlay{
+    animation: ease-in overlay 3s forwards;
+}
+
+.logo{
+    animation: logo 3s ease-in-out forwards;
+    animation-delay: 1s;
+    opacity: 0;
+}
+
+@keyframes overlay {
+    from{
+        background: rgb(170, 229, 255);
+    }
+    to{
+        background-color: rgba(0, 0, 0, 0);
+    }
+}
+
+@keyframes logo{
+    from{
+        opacity: 0;
+    }
+    50%{
+        opacity: 1;
+    }
+    to{
+        opacity: 0;
+    }
+}
+
+@keyframes other {
+    from{
+        transform: translateY(-40px);
+        opacity: 0;
+    }
+
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

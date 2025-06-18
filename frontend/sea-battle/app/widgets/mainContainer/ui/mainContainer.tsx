@@ -1,12 +1,18 @@
 import "./mainContainer.css";
 
-export function MainContainer({ children }: { children: React.ReactNode }) {
+type props={
+    children: React.ReactNode,
+    classMain?: string,
+    classContent?: string,
+}
+
+export function MainContainer({ children, classMain, classContent}: props) {
 
   return (
-        <main className={"main-container"}>
-            <div className={"content-container"}>
+        <div className={`main-container ${classMain}`} >
+            <div className={`content-container ${classContent}`}>
                 {children}
             </div>
-        </main>
+        </div>
   );
 }

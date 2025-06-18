@@ -1,19 +1,23 @@
 import {MainContainer} from "~/widgets/mainContainer";
-import "./menu.css";
+import styles from "./menu.module.css";
 import {Button} from "~/shared/button";
 import {useNavigate} from "react-router";
-import {useState} from "react";
+import {OverlayComponent} from "~/features/overlayComponent";
+import {Header} from "~/widgets/header";
 
 export function MenuPage() {
 
     const navigate = useNavigate();
 
   return (
-    <MainContainer>
-        <h1 className={'container-title'}>МЕНЮ</h1>
-        <Button onClick={() => {navigate("/play")}} label={"Начать игру"} />
-        <Button onClick={() => {navigate("/multiplayer")}} label={"В сети"} />
-        <Button onClick={() => {navigate("/about")}} label={"0 нас"} />
-        <img className={"animation"} src={"../../../assets/images/pirateFlag.gif"} />
-    </MainContainer>
+      <>
+        <Header />
+        <MainContainer>
+            <h1 className={styles.containerTitle}>МЕНЮ</h1>
+            <Button onClick={() => {navigate("/play")}} label={"Начать игру"} />
+            <Button onClick={() => {navigate("/multiplayer")}} label={"В сети"} />
+            <Button onClick={() => {navigate("/about")}} label={"0 нас"} />
+            <img className={styles.animation} src={"../../../assets/images/pirateFlag.gif"} />
+        </MainContainer>
+      </>
   )};
