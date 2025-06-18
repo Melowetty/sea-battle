@@ -21,3 +21,4 @@ spring:
 app:
   cron:
     delete-revoked-tokens: 0 0 0 * * *
+    delete-expired-rooms: 0 0 * * * *

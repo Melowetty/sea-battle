@@ -1,13 +1,20 @@
 package ru.sigma.api
 
+import ru.sigma.common.dto.RoomDto
+import ru.sigma.domain.dto.GameDto
+
 interface MatchMakingApi {
-    fun joinRandomRoom()
+    fun getRoom(code: String): RoomDto
 
-    fun joinRoom(code: String)
+    fun joinRandomRoom(): RoomDto
 
-    fun createRoom(request: Any)
+    fun joinRoom(code: String): RoomDto
 
-    fun startRoom(roomId: Long)
+    fun createRoom(): RoomDto
 
-    fun leaveRoom(roomId: Long)
+    fun startRoom(code: String): GameDto
+
+    fun startRoomWithBots(code: String): GameDto
+
+    fun leaveRoom(code: String)
 }

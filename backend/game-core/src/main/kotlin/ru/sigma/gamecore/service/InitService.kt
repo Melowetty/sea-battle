@@ -12,7 +12,6 @@ import ru.sigma.common.model.Coordinate
 class InitService {
 
     fun initGameState(
-        gameId: Long,
         players: Map<UUID, List<List<Coordinate>>>,
         size: Int
     ): GameState {
@@ -28,7 +27,6 @@ class InitService {
             )
         }
         return GameState(
-            gameId = gameId,
             round = 1,
             playersFields = playerStates,
             fieldSize = size,

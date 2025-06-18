@@ -87,7 +87,7 @@ class JwtService(
         )
     }
 
-    private fun makeClaims(userInfo: UserInfo): Map<String, Any> {
+    private fun makeClaims(userInfo: UserInfo): Map<String, Any?> {
         return mapOf(
             "id" to userInfo.id,
             "telegram_id" to userInfo.telegramId,
