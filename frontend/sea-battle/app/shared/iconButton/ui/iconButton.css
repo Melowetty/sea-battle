@@ -1,0 +1,38 @@
+.icon-btn{
+    padding: 10px 40px;
+    appearance: none;
+    outline: none;
+    border: none;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: white;
+    align-items: center;
+    gap: 30px;
+    user-select: none;
+    width: 100%;
+    background-color: #ff9933;
+    font-family: "Pixelify Sans", sans-serif;
+}
+
+.icon-btn:hover{
+    cursor: url("../../assets/cursor/pointer.png"), pointer;
+    filter: brightness(110%);
+    transform: scale(1.05);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.icon-btn:active{
+
+}
+
+.icon-btn-label{
+    font-size: 32px;
+    width: 100%;
+}
+
+.icon-btn-icon{
+    width: 32px;
+    height: 32px;
+}

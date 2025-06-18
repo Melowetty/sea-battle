@@ -1,0 +1,61 @@
+.dialog-content {
+    border-radius: 6px;
+    background: url("../../../../assets/images/frame.PNG") no-repeat;
+    background-size: contain;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 90vw;
+    height: 347px;
+    max-width: 512px;
+    max-height: 500px;
+    transform: translate(-50%, -50%);
+    padding: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: contentShow 0.3s ease-out;
+}
+
+.dialog-overlay {
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    position: fixed;
+    inset: 0;
+    animation: overlayShow 0.3s ease-out;
+}
+
+.dialog-title{
+    font-size: 36px;
+}
+
+.dialog-description{
+    font-size: 32px;
+    font-family: "Pixelify Sans", sans-serif;
+    text-align: center;
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+@keyframes overlayShow {
+    from {
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
+@keyframes contentShow {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -65%);
+    }
+    to{
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}

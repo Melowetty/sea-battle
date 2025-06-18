@@ -1,0 +1,31 @@
+.cell{
+    height: 50px;
+    width: 50px;
+    border: 2px solid white;
+    font-size: 20px;
+    img{
+        width: 25px;
+        height: 25px;
+    }
+}
+
+.enemy{
+    cursor: url("../../assets/cursor/pointer.png"), pointer;
+    transition: 0.2s ease-in-out;
+}
+
+.enemy:hover{
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.miss{
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.ship{
+    background: rgba(101, 206, 222, 0.6);
+}
+
+.checked{
+    background: rgba(236, 5, 5, 0.5);
+}
