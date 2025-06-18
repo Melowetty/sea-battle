@@ -18,6 +18,8 @@
     span{
         font-size: 32px;
         text-shadow: 0 0 30px #000;
+        color: white;
+        font-family: "Pixelify Sans", sans-serif;
     }
 
 }
