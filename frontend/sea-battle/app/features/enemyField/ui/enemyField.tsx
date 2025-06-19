@@ -15,7 +15,7 @@ export function EnemyField() {
             <tr>
                 <th>{row.value}</th>
                 {items.map((item) => (
-                    <Cell x={row.value} y={item.value} variant={"enemy"} />
+                    <Cell type={"enemy"} x={row.value} y={item.value} variant={"enemy"} />
                 ))}
             </tr>
         ))}

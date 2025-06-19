@@ -7,8 +7,9 @@ import {DialogWindow} from "~/shared/dialog";
 import {Header} from "~/widgets/header";
 import {useEffect} from "react";
 import {useNavigate} from "react-router";
+import {getGame, leaveGame} from "~/features/game/model/game";
 
-export function PlayPage() {
+export function PlayPage(id:string) {
 
     const navigate = useNavigate();
 
@@ -25,14 +26,33 @@ export function PlayPage() {
         };
     }, []);
 
+    useEffect(() => {
+        const data = getGame(id.id);
+        data.then((game) => {
+            console.log(game);
+        })
+    }, []);
+
+    const handleSurrender = () => {
+        // const data = leaveGame(id.id);
+        // data.then((game) => {
+        //     console.log(game);
+        //     navigate("/lose");
+        // })
+        navigate('/lose')
+    }
+
   return (
       <>
         {/*<Header />*/}
         <MainContainer>
             <div className={`${styles.playContainer}`}>
                 <FieldContainer>
-                    <h1 className={`${styles.containerTitle}`}>Ваше поле</h1>
-                    <PlayerField />
+                    <h1
+                        className={`${styles.containerTitle}`}>
+                        Ваше поле <img className={styles.avatar} src={"../../../../assets/images/stepan.png"} />
+                    </h1>
+                    <PlayerField id={id} />
                 </FieldContainer>
                 <div className={`${styles.statsContainer}`}>
                     <h1 className={styles.turnActive}>
@@ -43,7 +63,7 @@ export function PlayPage() {
                         title={"Завершение игры"}
                         description={"Вы уверены, что хотите завершить игру?"}
                         label="Завершить игру"
-                        onClick={() => {navigate("/lose")}} />
+                        onClick={handleSurrender} />
                 </div>
                 <FieldContainer>
                     <h1 className={`${styles.containerTitle}`}>Поле соперника</h1>

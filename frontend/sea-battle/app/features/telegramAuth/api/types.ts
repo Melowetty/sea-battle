@@ -1,16 +1,16 @@
 export interface LoginRequest {
-    id: bigint,
+    id: number,
     firstName: string,
-    lastName: string,
-    username: string,
-    photoUrl: string,
-    authDate: bigint,
+    lastName: string | undefined,
+    username: string | undefined,
+    photoUrl: string | undefined,
+    authDate: number,
     hash: string
 }
 
 export interface LoginResponse {
     accessToken: string,
-    accessTokenExpiresIn: bigint,
+    accessTokenExpiresIn: number,
     refreshToken: string,
-    refreshTokenExpiresIn: bigint
+    refreshTokenExpiresIn: number
 }

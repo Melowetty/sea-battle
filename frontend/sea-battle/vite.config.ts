@@ -7,6 +7,13 @@ export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   server: {
     allowedHosts: true,
+    proxy: {
+      '/api': {
+        target: 'https://d5d5ujno72nh9qu45pq5.sk0vql13.apigw.yandexcloud.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   },
   css: {
     modules: {

@@ -1,0 +1,41 @@
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.label{
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 32px;
+    color: var(--color-font-accent);
+    font-weight: bold;
+    text-shadow: 1px 1px 30px black;
+    -webkit-text-stroke: 0.5px black;
+}
+
+.input{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 32px;
+    background: url("../../../../assets/images/inputWood.PNG") no-repeat;
+    background-size: cover;
+    height: 150px;
+    width: 350px;
+    text-align: center;
+    padding: 10px 0 0 0;
+    font-weight: 700;
+    -webkit-text-stroke: 0.5px black;
+}
+
+.input::placeholder{
+    color: #cccccc;
+}
+
+.input:focus{
+    outline: none;
+}

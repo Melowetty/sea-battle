@@ -14,6 +14,14 @@
     }
 }
 
+.empty{
+
+}
+
+.ally{
+
+}
+
 .enemy{
     cursor: url("../../assets/cursor/pointer.png"), pointer;
     transition: 0.2s ease-in-out;
@@ -28,7 +36,7 @@
 }
 
 .ship{
-    background: rgba(101, 206, 222, 0.6);
+    background: rgba(55, 177, 194, 0.94);
 }
 
 .checked{
