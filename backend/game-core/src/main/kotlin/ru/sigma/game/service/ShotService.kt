@@ -4,12 +4,16 @@ import jakarta.persistence.EntityNotFoundException
 import java.util.UUID
 import org.springframework.stereotype.Service
 import ru.sigma.common.model.Coordinate
+import ru.sigma.data.domain.model.CellStatus
 import ru.sigma.data.domain.model.Event
 import ru.sigma.data.domain.model.ShipStatus
 import ru.sigma.data.domain.model.game.GameState
 import ru.sigma.data.domain.model.game.PlayerState
 import ru.sigma.data.domain.model.game.Ship
 import ru.sigma.data.repository.GameRepository
+import ru.sigma.game.domain.dto.AfterShotStateDto
+import ru.sigma.game.domain.dto.CoordinateStatusDto
+import ru.sigma.game.domain.dto.EventChangesDto
 import ru.sigma.game.domain.dto.ShotResultDto
 
 @Service
@@ -27,11 +31,14 @@ class ShotService (
         val targetPlayerState = gameState.playersFields[targetPlayerId]
             ?: throw IllegalStateException("Target player state is null")
 
-        val event = defineAnEvent(
+        val eventChanges = defineAnEvent(
             enemyPlayerState = targetPlayerState,
             shotCoordinate = shot,
-            gameState.fieldSize
+            gameState.fieldSize,
         )
+
+        val event = eventChanges.event
+        val fieldsDifference = eventChanges.fieldsDifference
 
         recordShotHistory(
             gameState = gameState,
@@ -39,11 +46,17 @@ class ShotService (
             shot = shot,
             event = event
         )
-
-        gameRepository.save(
-            gameRepository.findById(gameId)
-                .orElseThrow { EntityNotFoundException("Entity not found with id: $gameId") }
-        )
+        if (event == Event.FILL) {
+            return ShotResultDto(
+                gameState = gameState,
+                afterShotState = AfterShotStateDto(
+                    event = event,
+                    targetPlayer = targetPlayerId,
+                    nextPlayer = currentPlayerId,
+                    fieldsDifference = fieldsDifference.toList()
+                )
+            )
+        }
 
         // указываем следующего игрока
         var nextPlayer = currentPlayerId
@@ -52,24 +65,34 @@ class ShotService (
         }
 
         return ShotResultDto(
-            event = event,
-            currentState = targetPlayerState,
-            nextPlayer = nextPlayer
+            gameState = gameState,
+            afterShotState = AfterShotStateDto(
+                event = event,
+                targetPlayer = targetPlayerId,
+                nextPlayer = nextPlayer,
+                fieldsDifference = fieldsDifference
+            )
         )
     }
 
     private fun defineAnEvent(
         enemyPlayerState: PlayerState,
         shotCoordinate: Coordinate,
-        fieldSize: Int
-    ): Event {
+        fieldSize: Int,
+    ): EventChangesDto {
+        var fieldDifference = listOf<CoordinateStatusDto>()
         var event = Event.MISS
-
+        when {
+            shotCoordinate in enemyPlayerState.misses -> return EventChangesDto(Event.FILL, fieldDifference)
+            shotCoordinate in enemyPlayerState.hits -> return EventChangesDto(Event.FILL, fieldDifference)
+            shotCoordinate in enemyPlayerState.destructions -> return EventChangesDto(Event.FILL, fieldDifference)
+        }
         enemyPlayerState.ships.forEach { ship ->
             if (shotCoordinate in ship.coordinates) {
                 enemyPlayerState.hits += shotCoordinate // добавляем попадание
                 ship.healthPoints--
                 event = Event.HIT
+                fieldDifference += CoordinateStatusDto(shotCoordinate, CellStatus.HIT)
 
                 if (ship.healthPoints == 0) {
                     ship.status = ShipStatus.DEAD
@@ -84,21 +107,25 @@ class ShotService (
 //                        enemyPlayerState.hits = hitsList as List<Coordinate>
                     enemyPlayerState.hits = enemyPlayerState.hits - ship.coordinates.toSet() // непроверено что работает
                     enemyPlayerState.destructions += ship.coordinates
-                    makeMissAroundDestruction(enemyPlayerState, fieldSize, ship)
+                    fieldDifference += makeMissAroundDestruction(enemyPlayerState, fieldSize, ship)
                     if (enemyPlayerState.aliveShips == 0) {
                         event = Event.ALL_DESTRUCTION
                     }
                 }
             }
         }
-        return event
+        return EventChangesDto(
+            event = event,
+            fieldsDifference = fieldDifference
+        )
     }
 
     private fun makeMissAroundDestruction(
         state: PlayerState,
         fieldSize: Int,
-        currentShip: Ship
-    ) {
+        currentShip: Ship,
+    ): List<CoordinateStatusDto> {
+        var fieldDifference = mutableListOf<CoordinateStatusDto>()
         currentShip.coordinates.forEach { currentDestructionCoordinate ->
             for (direction in listOf(1 to 0, 1 to 1, 1 to -1, -1 to 0, -1 to -1, -1 to 1, 0 to 1, 0 to -1)) {
                 val targetCoordinate = Coordinate(currentDestructionCoordinate.x + direction.first, currentDestructionCoordinate.y + direction.second)
@@ -106,10 +133,14 @@ class ShotService (
                     !targetCoordinate.isValid(fieldSize) -> continue
                     targetCoordinate in currentShip.coordinates -> continue
                     targetCoordinate in state.misses -> continue
-                    else -> state.misses += targetCoordinate
+                    else -> {
+                        fieldDifference += CoordinateStatusDto(targetCoordinate, CellStatus.MISS)
+                        state.misses += targetCoordinate
+                    }
                 }
             }
         }
+        return fieldDifference.toList()
 
     }
     private fun getCurrentAndTargetPlayerIds(gameState: GameState): Pair<UUID, UUID> {
