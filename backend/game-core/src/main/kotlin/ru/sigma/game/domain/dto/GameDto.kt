@@ -6,6 +6,7 @@ import java.util.UUID
 import ru.sigma.common.dto.UserDto
 
 class GameDto(
+    val id: Long,
     val players: List<UserDto>,
     val currentPlayer: UUID,
     val playerState: PlayerState,

@@ -185,6 +185,7 @@ class GameService(
         }
 
         return GameDto(
+            id = id,
             players = players,
             currentPlayer = currentPlayer,
             playerState = playerState,

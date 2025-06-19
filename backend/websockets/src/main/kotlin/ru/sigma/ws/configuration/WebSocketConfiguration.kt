@@ -18,7 +18,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 class WebSocketConfiguration: WebSocketMessageBrokerConfigurer {
     override fun configureMessageBroker(config: MessageBrokerRegistry) {
-        config.enableSimpleBroker("/user")
+        config.enableSimpleBroker("/game")
         config.setApplicationDestinationPrefixes("/app")
         config.setUserDestinationPrefix("/game")
     }
