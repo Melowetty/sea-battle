@@ -6,7 +6,8 @@ include(":data")
 include(":game-core")
 include(":api")
 include(":match-making")
+include(":bot-engine")
 
-// Точки входа
+
 include(":web")
 include(":security")
