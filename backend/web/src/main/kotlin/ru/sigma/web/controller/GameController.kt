@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ru.sigma.common.model.Coordinate
+import ru.sigma.game.domain.dto.AfterShotStateDto
 import ru.sigma.game.domain.dto.GameDto
-import ru.sigma.game.domain.dto.ShotResultDto
 import ru.sigma.security.api.SecuredGameApi
 
 @RestController
@@ -24,7 +24,7 @@ class GameController(
     }
 
     @PostMapping("/{id}/shot")
-    fun shot(@PathVariable @Min(1) id: Long, @RequestBody shot: ShotRequest): ShotResultDto {
+    fun shot(@PathVariable @Min(1) id: Long, @RequestBody shot: ShotRequest): AfterShotStateDto {
         return securedGameApi.makeShot(id, Coordinate(shot.x, shot.y))
     }
 

@@ -5,8 +5,8 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import ru.sigma.api.GameApi
 import ru.sigma.common.model.Coordinate
+import ru.sigma.game.domain.dto.AfterShotStateDto
 import ru.sigma.game.domain.dto.GameDto
-import ru.sigma.game.domain.dto.ShotResultDto
 
 @Component
 class SecuredGameApi(
@@ -19,7 +19,7 @@ class SecuredGameApi(
     }
 
     @PreAuthorize("isAuthenticated()")
-    override fun makeShot(id: Long, coords: Coordinate): ShotResultDto {
+    override fun makeShot(id: Long, coords: Coordinate): AfterShotStateDto {
         return gameApi.makeShot(id, coords)
     }
 

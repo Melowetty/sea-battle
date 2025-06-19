@@ -20,6 +20,7 @@ import ru.sigma.data.extensions.UserExtensions.toDto
 import ru.sigma.data.repository.GameRepository
 import ru.sigma.data.repository.GameResultRepository
 import ru.sigma.data.repository.UserRepository
+import ru.sigma.game.domain.dto.AfterShotStateDto
 import ru.sigma.game.domain.dto.GameDto
 import ru.sigma.game.domain.dto.ShotResultDto
 import ru.sigma.game.domain.exception.GameNotFoundException
@@ -67,22 +68,25 @@ class GameService(
     fun processTheShot(
         gameId: Long,
         shot: Coordinate
-    ): ShotResultDto {
+    ): AfterShotStateDto {
         val gameState = loadGameState(gameId) // полуеаем текущее состояние игры по id
 
-        if (userRepository.findById(getCurrentUser(gameState)) != getCurrentUserOrThrow()) {
-            return ShotResultDto(
-                event = Event.MISS,
-                currentState = gameState.playersFields.values.random(),
-                nextPlayer = getCurrentUser(gameState)
-            )
-        }
+//        if (getCurrentUser(gameState) != getCurrentUserOrThrow().id) {
+//            return AfterShotStateDto(
+//                event = Event.FILL,
+//                targetPlayer = getCurrentUser(gameState),
+//                nextPlayer = getCurrentUser(gameState),
+//                fieldsDifference = listOf()
+//            )
+//        }
 
         val result = shotService.makeShot(gameId, gameState, shot) // делаем выстрел и получаем результат
 
-        calculateNextMove(gameId,  result.event, gameState)
+        calculateNextMove(gameId,  result.afterShotState.event, gameState)
 
-        return result // возвращаем рещультат выстрела
+        saveGameState(gameId, result.gameState)
+
+        return result.afterShotState // возвращаем рещультат выстрела
     }
 
     @Transactional
@@ -155,11 +159,13 @@ class GameService(
             Thread.sleep(5000)
             val coords = botService.processShot(botShootingState, botId)
             var result = shotService.makeShot(gameId, gameState, coords)
+            saveGameState(gameId, result.gameState)
 
-            while (result.event == Event.HIT || result.event == Event.DESTRUCTION) {
+            while (result.afterShotState.event == Event.HIT || result.afterShotState.event == Event.DESTRUCTION) {
                 Thread.sleep(5000)
                 val newCoords = botService.processShot(botShootingState, botId)
                 result = shotService.makeShot(gameId, gameState, newCoords)
+                saveGameState(gameId, result.gameState)
             }
         }.start()
     }
@@ -172,6 +178,17 @@ class GameService(
         val gameState = objectMapper.readValue(game.state, GameState::class.java)
 
         return gameState
+    }
+
+    private fun saveGameState(gameId: Long, updatedState: GameState) {
+        val game = getGameOrThrow(gameId) // Получаем существующую сущность
+
+        // Сериализуем обновлённое состояние в JSON
+        val serializedState = objectMapper.writeValueAsString(updatedState)
+
+        // Обновляем и сохраняем
+        game.state = serializedState
+        gameRepository.save(game) // Предполагается, что у вас есть JPA репозиторий
     }
 
     private fun GameEntity.toDto(userId: UUID): GameDto {
