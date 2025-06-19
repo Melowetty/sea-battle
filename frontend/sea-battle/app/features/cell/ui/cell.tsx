@@ -6,6 +6,7 @@ type CellProps = {
   x: number;
   y: number;
   onClick?: () => void;
+  type: "ally" | "enemy";
 }
 
 export function Cell({variant = "empty", ...props}: CellProps): ReactNode {
@@ -25,7 +26,7 @@ export function Cell({variant = "empty", ...props}: CellProps): ReactNode {
     <th
         data-x={props.x}
         data-y={props.y}
-        id={`${props.x}${props.y}${variant}`}
+        id={`${props.x}${props.y}${props.type}`}
         className={`${styles.cell} ${styles[variant]}`}
         onClick={variant === "enemy" ? () => handleEnemy(props.x, props.y) : () => {}}>
     </th>

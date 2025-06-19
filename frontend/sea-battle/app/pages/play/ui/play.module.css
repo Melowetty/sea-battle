@@ -1,5 +1,9 @@
 .container-title {
     font-size: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .play-container {
@@ -43,4 +47,10 @@
     to{
         color: chartreuse;
     }
+}
+
+.avatar{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
 }

@@ -23,5 +23,5 @@ export default function About() {
     return <Navigate to="/" replace />;
   }
 
-  return <PlayPage id={id} />;
+  return <GamePage id ={id} />;
 }

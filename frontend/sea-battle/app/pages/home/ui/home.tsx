@@ -22,8 +22,8 @@ export function HomePage() {
         "firstName": "Стёп",
         "hash": "вфвфапфаф",
         "id":932326,
-        "lastName":"Гуцол",
-        "photoUrl":"Гуцол",
+        "lastName": "Гуцол",
+        "photoUrl": "../../../../assets/images/stepan.png",
         "username": "Gucol",
     }
 
