@@ -84,14 +84,14 @@ class JwtService(
 
         return UserInfo(
             id = UUID.fromString(claims["id"] as String),
-            telegramId = claims["telegram_id"] as Long,
+            telegramId = (claims["telegram_id"] as String).toLong(),
         )
     }
 
     private fun makeClaims(userInfo: UserInfo): Map<String, Any?> {
         return mapOf(
             "id" to userInfo.id,
-            "telegram_id" to userInfo.telegramId,
+            "telegram_id" to userInfo.telegramId.toString(),
         )
     }
 
