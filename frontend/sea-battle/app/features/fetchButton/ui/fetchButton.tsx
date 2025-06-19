@@ -11,15 +11,15 @@ type buttonProps = {
 export function FetchButton({label = "кнопка", ...props}: buttonProps) {
     const [isLoading, setIsLoading] = React.useState(false);
 
-    const handleClick = () => {
-        setIsLoading(true);
-        props.onClick && props.onClick();
-    }
+    // const handleClick = () => {
+    //     setIsLoading(true);
+    //     props.onClick && props.onClick();
+    // }
 
   return (
       <>
           {!isLoading && (
-              <Button onClick={handleClick} label={label} />
+              <Button onClick={props.onClick} label={label} />
           )}
           {isLoading && (
                 <Loading />

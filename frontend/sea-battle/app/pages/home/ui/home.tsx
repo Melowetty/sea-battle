@@ -6,26 +6,42 @@ import {Button} from "~/shared/button";
 import {loginUser} from "~/features/telegramAuth/model/auth";
 import {FetchButton} from "~/features/fetchButton";
 import {useNavigate} from "react-router";
+import {useAuthStore} from "~/features/auth/model/authStore";
+import {authApi} from "~/features/telegramAuth/api/telegramAuth.api";
+import type ITelegramUser from "~/types/telegram/api-telegram-user";
+import type {LoginRequest} from "~/features/telegramAuth/api/types";
 
 export function HomePage() {
 
     const navigate = useNavigate();
 
-    const handleClick = () => {
-        const user = {
-            "auth_date": 17251857,
-            "first_name": "Стёп",
-            "hash": "вфвфапфаф",
-            "id":932326,
-            "last_name":"Гуцол",
-            "photo_url":"Гуцол",
-            "username": "Gucol",
-        }
-        const data = loginUser(user);
-        data.then((data) => {
-            console.log(data);
-            navigate("/menu");
-        })
+    const setAuthData = useAuthStore(state => state.setAuthData);
+
+    const user:LoginRequest = {
+        "authDate": 17251857,
+        "firstName": "Стёп",
+        "hash": "вфвфапфаф",
+        "id":932326,
+        "lastName":"Гуцол",
+        "photoUrl":"Гуцол",
+        "username": "Gucol",
+    }
+
+    // const handleClick = () => {
+    //
+    //     const data = loginUser(user);
+    //     data.then((data) => {
+    //         setAuthData(data.accessToken, data.accessTokenExpiresIn);
+    //         console.log(data);
+    //         navigate("/menu");
+    //     })
+    // }
+
+    const loginate = async() =>{
+        const { data } = await authApi.login(user);
+        console.log(data);
+        setAuthData(data.accessToken, data.accessTokenExpiresIn);
+        navigate("/menu");
     }
 
     return (
@@ -39,7 +55,7 @@ export function HomePage() {
                 <img className={styles.pointer} src={"../../../assets/images/pointer.gif"} />
             </div>
             <TelegramLoginButton />
-            <FetchButton onClick={handleClick} label="Резерв" />
+            <FetchButton onClick={loginate} label="Резерв" />
         </MainContainer>
     </>
   );

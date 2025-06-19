@@ -1,5 +1,8 @@
 import type { Route } from "../../.react-router/types/app/routes/+types";
 import {MenuPage} from "~/pages/menu";
+import {useAuthStore} from "~/features/auth/model/authStore";
+import {Navigate} from "react-router";
+import React from "react";
 
 
 export function meta({}: Route.MetaArgs) {
@@ -10,5 +13,12 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Menu() {
+
+  const { isAuthenticated } = useAuthStore();
+
+  if (!isAuthenticated()) {
+    return <Navigate to="/" replace />;
+  }
+
   return <MenuPage />;
 }

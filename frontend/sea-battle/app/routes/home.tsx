@@ -1,5 +1,8 @@
 import type { Route } from "../../.react-router/types/app/routes/+types";
 import {HomePage} from "~/pages/home";
+import {useAuthStore} from "~/features/auth/model/authStore";
+import {Navigate} from "react-router";
+import React from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,5 +12,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <HomePage />;
+    return <HomePage />;
 }

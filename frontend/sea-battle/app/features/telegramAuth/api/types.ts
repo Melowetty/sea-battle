@@ -10,7 +10,7 @@ export interface LoginRequest {
 
 export interface LoginResponse {
     accessToken: string,
-    accessTokenExpiresIn: bigint,
+    accessTokenExpiresIn: number,
     refreshToken: string,
-    refreshTokenExpiresIn: bigint
+    refreshTokenExpiresIn: number
 }
