@@ -20,6 +20,6 @@ class GameApiImpl(
     }
 
     override fun leaveGame(id: Long) {
-        throw NotImplementedError("Not implemented")
+        return gameService.leave(id)
     }
 }

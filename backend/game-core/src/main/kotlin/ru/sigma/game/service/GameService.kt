@@ -22,7 +22,6 @@ import ru.sigma.data.repository.GameResultRepository
 import ru.sigma.data.repository.UserRepository
 import ru.sigma.game.domain.dto.AfterShotStateDto
 import ru.sigma.game.domain.dto.GameDto
-import ru.sigma.game.domain.dto.ShotResultDto
 import ru.sigma.game.domain.exception.GameNotFoundException
 
 @Service
@@ -89,13 +88,13 @@ class GameService(
         return result.afterShotState // возвращаем рещультат выстрела
     }
 
-    fun leave(
-        gameId: Long
-    ) {
+    fun leave(gameId: Long) {
         val looser = getCurrentUserOrThrow()
         val game = getGameOrThrow(gameId)
+
         val winner = game.players.firstOrNull { it != looser}
             ?: throw IllegalStateException("User not found")
+
         processTheVictory(gameId, winner)
     }
 
