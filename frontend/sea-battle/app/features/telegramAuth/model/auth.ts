@@ -14,7 +14,7 @@ export const loginUser = async (credentials: ITelegramUser) => {
     }
     console.log(cleanCredentials);
     const { data } = await authApi.login(cleanCredentials);
-    // localStorage.setItem('token', data.token);
-    console.log(data);
+    localStorage.setItem('token', data.accessToken);
+    localStorage.setItem('tokenExpiresIn', String(data.accessTokenExpiresIn));
     return data;
 };

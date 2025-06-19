@@ -21,7 +21,7 @@ export function MultiplayerPage() {
 
             <Button onClick={() => {navigate("/play")}} label={"Создать комнату"} />
             <Separator />
-            <Button onClick={() => {navigate(-1)}} label={"Назад"} />
+            <Button  onClick={() => {navigate(-1)}} label={"Назад"} />
         </MainContainer>
       </>
   )};

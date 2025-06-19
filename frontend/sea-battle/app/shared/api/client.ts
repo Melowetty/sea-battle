@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 export const httpClient = axios.create({
-    baseURL: "https://d5d5ujno72nh9qu45pq5.sk0vql13.apigw.yandexcloud.net",
+    // baseURL: "https://d5d5ujno72nh9qu45pq5.sk0vql13.apigw.yandexcloud.net",
+    baseURL: "/api",
     headers: { 'Content-Type': 'application/json' }
 });
 
