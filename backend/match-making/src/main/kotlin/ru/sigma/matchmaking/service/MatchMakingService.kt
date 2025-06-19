@@ -4,6 +4,8 @@ import kotlin.jvm.optionals.getOrNull
 import org.springframework.stereotype.Service
 import ru.sigma.common.context.UserAuthContextHolder
 import ru.sigma.common.dto.RoomDto
+import ru.sigma.common.exception.PermissionDeniedException
+import ru.sigma.common.model.GameBot
 import ru.sigma.data.domain.entity.RoomEntity
 import ru.sigma.data.domain.entity.UserEntity
 import ru.sigma.data.extensions.RoomExtensions.toDto
@@ -60,8 +62,32 @@ class MatchMakingService(
 
     fun startGame(code: String): GameDto {
         val room = getRoomOrThrow(code)
+        val user = getCurrentUserOrThrow()
+        if (user.id != room.host.id) {
+            throw PermissionDeniedException("You are not the host of the room")
+        }
+
         val players = (room.players + room.host).shuffled()
         val states = players.associate { Pair(it.id, shipPlacementService.getPlaceShips()) }
+
+        return gameService.startNewGame(states, 10)
+    }
+
+    fun startGameWithBots(code: String): GameDto {
+        val room = getRoomOrThrow(code)
+        val user = getCurrentUserOrThrow()
+        if (user.id != room.host.id) {
+            throw PermissionDeniedException("You are not the host of the room")
+        }
+
+        val botEntity = userRepository.findById(GameBot.DOCTOR_LIVSI.id).get()
+
+        val players = (room.players + room.host).toMutableList()
+        while (players.size < room.maxSize) {
+            players += botEntity
+        }
+
+        val states = players.shuffled().associate { Pair(it.id, shipPlacementService.getPlaceShips()) }
 
         return gameService.startNewGame(states, 10)
     }
