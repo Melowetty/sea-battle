@@ -10,6 +10,8 @@ import ru.sigma.common.model.UserAuthContext
 import ru.sigma.data.domain.entity.UserEntity
 import ru.sigma.data.repository.UserRepository
 import ru.sigma.security.Extensions.toUserInfo
+import ru.sigma.security.domain.exception.TokenIsExpiredException
+import ru.sigma.security.domain.model.AuthTokenRefreshResponse
 import ru.sigma.security.domain.model.AuthTokenResponse
 import ru.sigma.security.domain.model.telegram.TelegramAuthRequest
 
@@ -47,6 +49,21 @@ class AuthService(
             accessTokenExpiresIn = accessToken.expiresIn,
             refreshToken = refreshToken.token,
             refreshTokenExpiresIn = refreshToken.expiresIn
+        )
+    }
+
+    fun refreshAuthorization(token: String): AuthTokenRefreshResponse {
+        if (!jwtService.verifyToken(token)) {
+            throw TokenIsExpiredException("Токен недействителен")
+        }
+
+        val user = jwtService.getUserInfoFromToken(token)
+
+        val accessToken = jwtService.generateAccessToken(user)
+
+        return AuthTokenRefreshResponse(
+            accessToken = accessToken.token,
+            accessTokenExpiresIn = accessToken.expiresIn,
         )
     }
 
