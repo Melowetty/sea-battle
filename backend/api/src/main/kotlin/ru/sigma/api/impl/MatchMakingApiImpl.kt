@@ -31,7 +31,7 @@ class MatchMakingApiImpl(
     }
 
     override fun startRoomWithBots(code: String): GameDto {
-        TODO("Not yet implemented")
+        return matchMakingService.startGameWithBots(code)
     }
 
     override fun leaveRoom(code: String) {

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import ru.sigma.common.exception.NotFoundException
+import ru.sigma.common.exception.PermissionDeniedException
 import ru.sigma.matchmaking.exception.RoomIsFullException
 import ru.sigma.security.domain.exception.TokenIsExpiredException
 import ru.sigma.web.model.ErrorResponse
@@ -28,5 +29,11 @@ class ExceptionHandlerController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleRoomIsFullException(e: RoomIsFullException): ErrorResponse {
         return ErrorResponse(e.message ?: "", "ROOM_IS_FULL")
+    }
+
+    @ExceptionHandler(PermissionDeniedException::class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    fun handlePermissionDeniedException(e: PermissionDeniedException): ErrorResponse {
+        return ErrorResponse(e.message ?: "", "PERMISSION_DENIED")
     }
 }
