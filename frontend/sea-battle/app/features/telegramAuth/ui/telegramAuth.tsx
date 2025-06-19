@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import styles from "./telegramAuth.module.css";
 import {loginUser} from "~/features/telegramAuth/model/auth";
+import {useAuthStore} from "~/features/auth/model/authStore";
+import {useNavigate} from "react-router";
+import type {LoginRequest} from "~/features/telegramAuth/api/types";
 
 interface ITelegramUser {
     id: number;
@@ -18,24 +21,37 @@ declare global {
     }
 }
 
+type tgProps = {
+    onClick: (user:LoginRequest) => void;
+}
 
-export const TelegramLoginButton = () => {
+export const TelegramLoginButton = ({onClick}: tgProps) => {
+
+    const setAuthData = useAuthStore(state => state.setAuthData);
+    const navigate = useNavigate();
+
     useEffect(() => {
         const script = document.createElement('script');
         script.src = 'https://telegram.org/js/telegram-widget.js?22';
         script.async = true;
         script.setAttribute('data-telegram-login', 'FloppaByGucol_bot');
         script.setAttribute('data-size', 'large');
-        // script.setAttribute('data-auth-url', 'https://d5d5ujno72nh9qu45pq5.sk0vql13.apigw.yandexcloud.net/auth/telegram');
-        // script.setAttribute('data-request-access', 'write');
-        // script.setAttribute('data-request-url', 'https://d5d5ujno72nh9qu45pq5.sk0vql13.apigw.yandexcloud.net/auth/telegram');
         script.setAttribute('data-onauth', 'onTelegramAuth(user)')
 
         const container = document.getElementById('telegram-btn-container');
         container?.appendChild(script);
 
         window.onTelegramAuth = function (user: ITelegramUser) {
-            loginUser(user);
+            const userTg:LoginRequest = {
+                "authDate": user.auth_date,
+                "firstName": user.first_name,
+                "hash": user.hash,
+                "id": user.id,
+                "lastName": user.last_name,
+                "photoUrl": user.photo_url,
+                "username": user.username,
+            }
+            onClick(userTg);
         }
 
 

@@ -27,20 +27,11 @@ export function HomePage() {
         "username": "Gucol",
     }
 
-    // const handleClick = () => {
-    //
-    //     const data = loginUser(user);
-    //     data.then((data) => {
-    //         setAuthData(data.accessToken, data.accessTokenExpiresIn);
-    //         console.log(data);
-    //         navigate("/menu");
-    //     })
-    // }
-
-    const loginate = async() =>{
+    const login = async(user:LoginRequest) =>{
         const { data } = await authApi.login(user);
+        const expiresAt = Date.now() + data.accessTokenExpiresIn * 1000;
         console.log(data);
-        setAuthData(data.accessToken, data.accessTokenExpiresIn);
+        setAuthData(data.accessToken, expiresAt);
         navigate("/menu");
     }
 
@@ -54,8 +45,8 @@ export function HomePage() {
                 <span>Вступить в команду!</span>
                 <img className={styles.pointer} src={"../../../assets/images/pointer.gif"} />
             </div>
-            <TelegramLoginButton />
-            <FetchButton onClick={loginate} label="Резерв" />
+            <TelegramLoginButton onClick={() => login(user)} />
+            <FetchButton onClick={() => login(user)} label="Резерв" />
         </MainContainer>
     </>
   );

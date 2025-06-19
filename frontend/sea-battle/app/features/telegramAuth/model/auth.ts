@@ -5,10 +5,7 @@ import {useAuthStore} from "~/features/auth/model/authStore";
 import {useNavigate} from "react-router";
 
 export const loginUser = async (credentials: ITelegramUser) => {
-    const setAuthData = useAuthStore(state => state.setAuthData);
     const navigate = useNavigate();
-
-
     const cleanCredentials: LoginRequest = {
         "authDate": credentials.auth_date,
         "firstName": credentials.first_name,
@@ -20,7 +17,6 @@ export const loginUser = async (credentials: ITelegramUser) => {
     }
     console.log(cleanCredentials);
     const { data } = await authApi.login(cleanCredentials);
-    setAuthData(data.accessToken, data.accessTokenExpiresIn);
     navigate("/menu");
     // localStorage.setItem('token', data.accessToken);
     // localStorage.setItem('expiresAt', String(data.accessTokenExpiresIn));

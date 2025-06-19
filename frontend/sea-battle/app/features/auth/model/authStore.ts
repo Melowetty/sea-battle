@@ -17,7 +17,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     token: getLocalStorage('token'),
     expiresAt: Number(getLocalStorage('expiresAt')) || null,
 
-    setAuthData: (token, expiresAt, roles) => {
+    setAuthData: (token, expiresAt) => {
         setLocalStorage('token', token);
         setLocalStorage('expiresAt', expiresAt.toString());
         set({ token, expiresAt});
@@ -33,7 +33,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     isAuthenticated: () => {
         const { token, expiresAt } = get();
-        return !!token && !!expiresAt;
-        // return !!token && !!expiresAt && expiresAt > Date.now();
+        // return !!token && !!expiresAt;
+        return !!token && !!expiresAt && expiresAt > Date.now();
     }
 }));
