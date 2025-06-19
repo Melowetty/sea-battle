@@ -12,8 +12,8 @@ COPY game-core ./game-core
 COPY security ./security
 COPY match-making ./match-making
 
-RUN ./gradlew dependencies --no-daemon
-COPY src /app/src
+# RUN ./gradlew dependencies --no-daemon
+# COPY src /app/src
 
 RUN ./gradlew build --no-daemon -x test
 
