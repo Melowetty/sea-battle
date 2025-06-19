@@ -3,14 +3,15 @@ package ru.sigma.security.service
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import java.security.Key
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
 import java.util.UUID
-import javax.crypto.SecretKey
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import ru.sigma.common.model.UserInfo
@@ -65,11 +66,11 @@ class JwtService(
 
         val token = Jwts
             .builder()
-            .claims(claims)
-            .subject(user.id.toString())
-            .issuedAt(Date(System.currentTimeMillis()))
-            .expiration(Date(System.currentTimeMillis() + liveTime.toMillis()))
-            .signWith(getSignInKey())
+            .setClaims(claims)
+            .setSubject(user.id.toString())
+            .setIssuedAt(Date(System.currentTimeMillis()))
+            .setExpiration(Date(System.currentTimeMillis() + liveTime.toMillis()))
+            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact()
 
         return TokenInfo(
@@ -111,17 +112,17 @@ class JwtService(
     private fun getClaims(token: String): Claims {
         try {
             return Jwts
-                .parser()
-                .decryptWith(getSignInKey())
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
                 .build()
-                .parseSignedClaims(token)
-                .payload
+                .parseClaimsJws(token)
+                .body
         } catch (exception: JwtException) {
             throw TokenIsExpiredException("Токен недействителен")
         }
     }
 
-    private fun getSignInKey(): SecretKey {
+    private fun getSignInKey(): Key {
         val decoded = Decoders.BASE64.decode(privateKey)
         return Keys.hmacShaKeyFor(decoded)
     }
