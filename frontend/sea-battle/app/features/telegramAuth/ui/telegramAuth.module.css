@@ -1,0 +1,18 @@
+.telegram-btn-wrapper {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.telegram-btn-wrapper{
+    margin: 0;
+    width: 100%;
+}
+
+#telegram-login-FloppaByGucol_bot{
+    width: 100%;
+
+    html, body, button, div{
+        width: 100%;
+    }
+}

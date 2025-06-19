@@ -3,10 +3,11 @@ package ru.sigma.security.middleware
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import org.springframework.security.authentication.ott.OneTimeTokenAuthenticationToken
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.stereotype.Component
@@ -16,7 +17,7 @@ import ru.sigma.common.context.UserAuthContextHolder
 import ru.sigma.security.service.AuthService
 
 @Component
-@Order(-1000)
+@Order(Ordered.HIGHEST_PRECEDENCE + 1)
 class AuthorizationMiddleware(
     private val authService: AuthService
 ) : OncePerRequestFilter() {
@@ -37,7 +38,7 @@ class AuthorizationMiddleware(
             val userAuthContext = authService.extractUserAuthContext(token)
             UserAuthContextHolder.set(userAuthContext)
 
-            val authentication = OneTimeTokenAuthenticationToken.authenticated(userAuthContext, listOf())
+            val authentication = UsernamePasswordAuthenticationToken.authenticated(userAuthContext, null, listOf())
             val context = SecurityContextImpl(authentication)
             SecurityContextHolder.setContext(context)
         }

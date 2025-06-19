@@ -1,0 +1,41 @@
+.main-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content-container {
+    padding: 20px;
+    border-top: 5px solid #F76800;
+    backdrop-filter: blur(var(--blur-radius));
+    background: rgba(255, 255, 255, 0.075);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    gap: 20px;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 1s;
+}
+
+.star{
+    position: absolute;
+    z-index: 25;
+    height: 64px;
+    top: -40px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

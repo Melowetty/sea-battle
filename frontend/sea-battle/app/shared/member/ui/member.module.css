@@ -1,0 +1,26 @@
+.member-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.member-image{
+    height: 250px;
+    border-radius: 10px;
+}
+
+.member-name{
+    color: white;
+    text-shadow: 1px 1px 20px #000;
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 25px;
+}
+
+.member-role{
+    color: var(--color-font-accent);
+    font-family: "Pixelify Sans", sans-serif;
+    font-weight: bold;
+    font-size: 32px;
+    -webkit-text-stroke: 1px black;
+}

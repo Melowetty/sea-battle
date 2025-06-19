@@ -1,0 +1,21 @@
+.field-container{
+    color: white;
+    font-size: 50px;
+    padding: 40px;
+    font-family: "Pixelify Sans", sans-serif;
+    user-select: none;
+}
+
+.field-row{
+}
+
+table{
+    border-collapse: collapse;
+    table-layout: fixed;
+    border-radius: 25px;
+}
+
+th{
+    height: 50px;
+    width: 50px;
+}
