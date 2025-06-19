@@ -6,6 +6,7 @@ import java.time.Instant
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import ru.sigma.botengine.service.BotTurnService
 import ru.sigma.common.context.UserAuthContextHolder
 import ru.sigma.common.model.Coordinate
@@ -84,6 +85,7 @@ class GameService(
         return result // возвращаем рещультат выстрела
     }
 
+    @Transactional
     fun processTheVictory(
         gameId: Long,
         gameState: GameState,

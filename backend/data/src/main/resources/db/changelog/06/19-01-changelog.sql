@@ -58,3 +58,6 @@ ALTER TABLE room_user ADD CONSTRAINT fk_room_user_on_user_entity FOREIGN KEY (us
 INSERT INTO users (id, telegram_id, created_at, name, avatar, is_bot, win, loss) VALUES
 ('00000000-0000-0000-0000-000000000001', NULL, CURRENT_TIMESTAMP, 'Доктор Ливси', 'https://i.postimg.cc/FH3Rg7CH/temp-Image-C9f-Gq-A.avif', true, 0, 0);
 
+--changeset denismalinin:11750342427453-20
+ALTER TABLE game ALTER COLUMN state TYPE TEXT USING state::TEXT;
+

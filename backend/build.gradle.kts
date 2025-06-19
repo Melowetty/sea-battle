@@ -19,6 +19,7 @@ dependencies {
     implementation(project(":match-making"))
     implementation(project(":common"))
     implementation(project(":web"))
+    implementation(project(":websockets"))
     implementation(project(":bot-engine"))
 }
 

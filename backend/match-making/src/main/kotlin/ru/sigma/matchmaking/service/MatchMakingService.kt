@@ -2,6 +2,7 @@ package ru.sigma.matchmaking.service
 
 import kotlin.jvm.optionals.getOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import ru.sigma.common.context.UserAuthContextHolder
 import ru.sigma.common.dto.RoomDto
 import ru.sigma.common.exception.PermissionDeniedException
@@ -60,6 +61,7 @@ class MatchMakingService(
         return joinRoom(room.code)
     }
 
+    @Transactional
     fun startGame(code: String): GameDto {
         val room = getRoomOrThrow(code)
         val user = getCurrentUserOrThrow()
@@ -70,9 +72,12 @@ class MatchMakingService(
         val players = (room.players + room.host).shuffled()
         val states = players.associate { Pair(it.id, shipPlacementService.getPlaceShips()) }
 
+        roomRepository.delete(room)
+
         return gameService.startNewGame(states, 10)
     }
 
+    @Transactional
     fun startGameWithBots(code: String): GameDto {
         val room = getRoomOrThrow(code)
         val user = getCurrentUserOrThrow()
@@ -88,6 +93,8 @@ class MatchMakingService(
         }
 
         val states = players.shuffled().associate { Pair(it.id, shipPlacementService.getPlaceShips()) }
+
+        roomRepository.delete(room)
 
         return gameService.startNewGame(states, 10)
     }
