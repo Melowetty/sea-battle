@@ -1,14 +1,13 @@
 spring:
   liquibase:
     enabled: true
-
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:sea-battle}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:1234}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
   security:
     jwt:
       private-key: ${JWT_SIGN_KEY:testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest}
@@ -22,3 +21,4 @@ app:
   cron:
     delete-revoked-tokens: 0 0 0 * * *
     delete-expired-rooms: 0 0 * * * *
+debug: true
