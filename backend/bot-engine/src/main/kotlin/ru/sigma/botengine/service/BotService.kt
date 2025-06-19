@@ -11,7 +11,7 @@ import java.util.UUID
 class BotService {
     fun getBotShoot(
         state: BotShootingState,
-        borId: UUID
+        bortId: UUID
     ): Coordinate {
 
         if (state.hits.isEmpty()) { // если нет попаданий по живым кораблям

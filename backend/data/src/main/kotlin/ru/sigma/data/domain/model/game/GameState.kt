@@ -17,7 +17,7 @@ data class PlayerState(
     val ships: List<Ship>, // мои корабли
     var destructions: List<Coordinate>, // уничтоженные корабли по клеткам
     var hits: List<Coordinate>, // попадания по мне (ещё в живые корабли)
-    val misses: List<Coordinate>, // промахи помне
+    var misses: List<Coordinate>, // промахи помне
     var aliveShips: Int // количество живых кораблей
 )
 

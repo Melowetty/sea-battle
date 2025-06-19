@@ -15,6 +15,7 @@ import ru.sigma.data.domain.entity.GameEntity
 import ru.sigma.data.domain.entity.GameResultEntity
 import ru.sigma.data.domain.entity.UserEntity
 import ru.sigma.data.domain.model.Event
+import ru.sigma.data.domain.model.game.BotShootingState
 import ru.sigma.data.domain.model.game.GameState
 import ru.sigma.data.extensions.UserExtensions.toDto
 import ru.sigma.data.repository.GameRepository
@@ -23,6 +24,7 @@ import ru.sigma.data.repository.UserRepository
 import ru.sigma.game.domain.dto.GameDto
 import ru.sigma.game.domain.dto.ShotResultDto
 import ru.sigma.game.domain.exception.GameNotFoundException
+import ru.sigma.game.domain.model.BotTurnEvent
 
 @Service
 class GameService(
@@ -69,6 +71,14 @@ class GameService(
         shot: Coordinate
     ): ShotResultDto {
         val gameState = loadGameState(gameId) // полуеаем текущее состояние игры по id
+
+        if (userRepository.findById(getCurrentUser(gameState)) != getCurrentUserOrThrow()) {
+            return ShotResultDto(
+                event = Event.MISS,
+                targetState = gameState.playersFields.values.random(),
+                nextPlayer = getCurrentUser(gameState)
+            )
+        }
 
         val result = shotService.checkShot(gameId, gameState, shot) // делаем выстрел и получаем результат
 
@@ -118,23 +128,33 @@ class GameService(
         gameId: Long,
         gameState: GameState
     ) {
+        val thisPlayer = gameState.players[gameState.round % 2]
+        val thisPlayerState = gameState.playersFields[thisPlayer]
+            ?: throw IllegalStateException("Player state is null")
         val nextRoundUserId = gameState.players[1 - (gameState.round % 2)]
         val currentPlayer = userRepository.findById(nextRoundUserId)
             .orElseThrow { EntityNotFoundException("Entity not found with id: $nextRoundUserId") }
 
         if (currentPlayer.isBot) { // проверяем не ход ли бота сейчас
-            callBot(gameId, nextRoundUserId) //вызываем ход бота
+            val fieldInfo = BotShootingState(
+                misses = thisPlayerState.misses + thisPlayerState.destructions,
+                hits = thisPlayerState.hits,
+                fieldSize = gameState.fieldSize
+            )
+            callBot( fieldInfo,nextRoundUserId) //вызываем ход бота
         }
 
     }
 
     private fun callBot(
-        gameId: Long,
+        fieldInfo: BotShootingState,
         botId: UUID
     ) {
         Timer().schedule(object : TimerTask() {
             override fun run() {
-//                eventPublisher.publishEvent(BotTurnEvent(gameId, botId))
+                // вызов бота
+
+//                eventPublisher.publishEvent(BotTurnEvent(targetState, fieldSize, botId))
             }
         }, 5000)
     }
@@ -177,4 +197,5 @@ class GameService(
         return userRepository.findById(userInfo.id).getOrNull()
             ?: throw IllegalStateException("User not found")
     }
+
 }
