@@ -57,7 +57,7 @@ class GameService(
     }
 
     fun getGameInfo(
-        gameId: Long,
+        gameId: Long
     ): GameDto {
         val user = getCurrentUserOrThrow()
         val game = getGameOrThrow(gameId)
@@ -89,24 +89,32 @@ class GameService(
         return result.afterShotState // возвращаем рещультат выстрела
     }
 
+    fun leave(
+        gameId: Long
+    ) {
+        val looser = getCurrentUserOrThrow()
+        val game = getGameOrThrow(gameId)
+        val winner = game.players.firstOrNull { it != looser}
+            ?: throw IllegalStateException("User not found")
+        processTheVictory(gameId, winner)
+    }
+
     @Transactional
     fun processTheVictory(
         gameId: Long,
-        gameState: GameState,
+        winner: UserEntity
     ) {
         val game = getGameOrThrow(gameId)
-        val winner = userRepository.findById(getCurrentUser(gameState))
-            .orElseThrow { EntityNotFoundException("Entity not found with id: ${getCurrentUser(gameState)}") }
 
         gameResultRepository.save(GameResultEntity(
-            id =  gameId,
-            winner = winner,
-            startedAt = game.createdAt,
-            endAt = Instant.now(),
-            players = game.players,
-        ))
+                id =  gameId,
+                winner = winner,
+                startedAt = game.createdAt,
+                endAt = Instant.now(),
+                players = game.players,
+            )
+        )
         gameRepository.deleteById(gameId)
-
     }
 
     private fun getCurrentUser(game: GameState): UUID = game.players[1 - (game.round % 2)]
@@ -117,7 +125,9 @@ class GameService(
         gameState: GameState
     ) {
         if (event == Event.ALL_DESTRUCTION) { // если текущий игрок всех победил
-            processTheVictory(gameId, gameState)
+            val winner = userRepository.findById(getCurrentUser(gameState))
+                .orElseThrow { EntityNotFoundException("Entity not found with id: ${getCurrentUser(gameState)}") }
+            processTheVictory(gameId, winner)
         }
         else {
             if (event == Event.MISS) { // если был промах, то раунд сменится
@@ -180,7 +190,10 @@ class GameService(
         return gameState
     }
 
-    private fun saveGameState(gameId: Long, updatedState: GameState) {
+    private fun saveGameState(
+        gameId: Long,
+        updatedState: GameState
+    ) {
         val game = getGameOrThrow(gameId) // Получаем существующую сущность
 
         // Сериализуем обновлённое состояние в JSON
