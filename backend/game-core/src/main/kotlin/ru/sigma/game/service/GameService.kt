@@ -3,12 +3,10 @@ package ru.sigma.game.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.persistence.EntityNotFoundException
 import java.time.Instant
-import java.util.Timer
-import java.util.TimerTask
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import ru.sigma.botengine.service.BotTurnService
 import ru.sigma.common.context.UserAuthContextHolder
 import ru.sigma.common.model.Coordinate
 import ru.sigma.data.domain.entity.GameEntity
@@ -24,7 +22,6 @@ import ru.sigma.data.repository.UserRepository
 import ru.sigma.game.domain.dto.GameDto
 import ru.sigma.game.domain.dto.ShotResultDto
 import ru.sigma.game.domain.exception.GameNotFoundException
-import ru.sigma.game.domain.model.BotTurnEvent
 
 @Service
 class GameService(
@@ -34,7 +31,7 @@ class GameService(
     private val objectMapper: ObjectMapper,
     private val shotService: ShotService,
     private val gameResultRepository: GameResultRepository,
-    private val eventPublisher: ApplicationEventPublisher
+    private val botService: BotTurnService
 ) {
 
     fun startNewGame(
@@ -75,12 +72,12 @@ class GameService(
         if (userRepository.findById(getCurrentUser(gameState)) != getCurrentUserOrThrow()) {
             return ShotResultDto(
                 event = Event.MISS,
-                targetState = gameState.playersFields.values.random(),
+                currentState = gameState.playersFields.values.random(),
                 nextPlayer = getCurrentUser(gameState)
             )
         }
 
-        val result = shotService.checkShot(gameId, gameState, shot) // делаем выстрел и получаем результат
+        val result = shotService.makeShot(gameId, gameState, shot) // делаем выстрел и получаем результат
 
         calculateNextMove(gameId,  result.event, gameState)
 
@@ -141,22 +138,28 @@ class GameService(
                 hits = thisPlayerState.hits,
                 fieldSize = gameState.fieldSize
             )
-            callBot( fieldInfo,nextRoundUserId) //вызываем ход бота
+            makeBotShot(gameId, gameState, fieldInfo, nextRoundUserId) //вызываем ход бота
         }
 
     }
 
-    private fun callBot(
-        fieldInfo: BotShootingState,
+    private fun makeBotShot(
+        gameId: Long,
+        gameState: GameState,
+        botShootingState: BotShootingState,
         botId: UUID
     ) {
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                // вызов бота
+        Thread {
+            Thread.sleep(5000)
+            val coords = botService.processShot(botShootingState, botId)
+            var result = shotService.makeShot(gameId, gameState, coords)
 
-//                eventPublisher.publishEvent(BotTurnEvent(targetState, fieldSize, botId))
+            while (result.event == Event.HIT || result.event == Event.DESTRUCTION) {
+                Thread.sleep(5000)
+                val newCoords = botService.processShot(botShootingState, botId)
+                result = shotService.makeShot(gameId, gameState, newCoords)
             }
-        }, 5000)
+        }.start()
     }
 
     private fun loadGameState(

@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import ru.sigma.api.GameApi
+import ru.sigma.common.model.Coordinate
 import ru.sigma.game.domain.dto.GameDto
+import ru.sigma.game.domain.dto.ShotResultDto
 
 @Component
 class SecuredGameApi(
@@ -13,13 +15,16 @@ class SecuredGameApi(
 ) : GameApi {
     @PreAuthorize("isAuthenticated()")
     override fun getGame(id: Long): GameDto {
-        println("from secured")
         return gameApi.getGame(id)
     }
 
     @PreAuthorize("isAuthenticated()")
+    override fun makeShot(id: Long, coords: Coordinate): ShotResultDto {
+        return gameApi.makeShot(id, coords)
+    }
+
+    @PreAuthorize("isAuthenticated()")
     override fun leaveGame(id: Long) {
-        println("from secured")
         gameApi.leaveGame(id)
     }
 }

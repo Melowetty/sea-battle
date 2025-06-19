@@ -6,6 +6,6 @@ import java.util.UUID
 
 class ShotResultDto(
     val event: Event,
-    val targetState: PlayerState,
+    val currentState: PlayerState,
     val nextPlayer: UUID
 )

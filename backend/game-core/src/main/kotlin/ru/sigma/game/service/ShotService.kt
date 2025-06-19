@@ -17,7 +17,7 @@ class ShotService (
     private val gameRepository: GameRepository,
 ) {
 
-    fun checkShot(
+    fun makeShot(
         gameId: Long,
         gameState: GameState,
         shot: Coordinate
@@ -53,7 +53,7 @@ class ShotService (
 
         return ShotResultDto(
             event = event,
-            targetState = targetPlayerState,
+            currentState = targetPlayerState,
             nextPlayer = nextPlayer
         )
     }

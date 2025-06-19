@@ -1,19 +1,15 @@
-package ru.sigma.botengine.service
+package ru.sigma.botengine.bot.impl
 
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
+import ru.sigma.botengine.bot.BaseBot
 import ru.sigma.common.model.Coordinate
+import ru.sigma.common.model.GameBot
 import ru.sigma.data.domain.model.CellStatus
 import ru.sigma.data.domain.model.game.BotShootingState
-import ru.sigma.data.domain.model.game.PlayerState
-import java.util.UUID
 
-@Service
-class BotService {
-    fun getBotShoot(
-        state: BotShootingState,
-        bortId: UUID
-    ): Coordinate {
-
+@Component
+class DoctorLivsiBot: BaseBot {
+    override fun process(state: BotShootingState): Coordinate {
         if (state.hits.isEmpty()) { // если нет попаданий по живым кораблям
             return getRandomShot(state)
         }
@@ -21,7 +17,11 @@ class BotService {
         if (isLineExist(state)) { // если есть линия из попаданий
             return getLineShotCoordinate(state)
         }
-       return getNeighborShotCoordinate(state) // стреляем рядом с любым попаданием
+        return getNeighborShotCoordinate(state) // стреляем рядом с любым попаданием
+    }
+
+    override fun getBot(): GameBot {
+        return GameBot.DOCTOR_LIVSI
     }
 
     private fun getRandomShot(state: BotShootingState): Coordinate {
