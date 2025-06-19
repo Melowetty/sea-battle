@@ -36,7 +36,6 @@ export const TelegramLoginButton = () => {
 
         window.onTelegramAuth = function (user: ITelegramUser) {
             loginUser(user);
-            console.log(user);
         }
 
 

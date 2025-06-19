@@ -1,0 +1,1 @@
+export {MultiplayerPage} from "./ui/multiplayer";

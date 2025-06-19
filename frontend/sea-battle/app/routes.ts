@@ -7,4 +7,5 @@ export default [
     route("/play", "routes/play.tsx"),
     route("/win", "routes/win.tsx"),
     route("/lose", "routes/lose.tsx"),
+    route("/multiplayer", "routes/multiplayer.tsx"),
 ] satisfies RouteConfig;

@@ -26,9 +26,10 @@
 
 .main-container, .header-container, .content-container {
     animation: other ease-in-out 3s forwards;
-    animation-delay: 3s;
+    animation-delay: 2s;
     will-change: backdrop-filter;
     opacity: 0;
+    border: none;
 }
 
 .content-container {

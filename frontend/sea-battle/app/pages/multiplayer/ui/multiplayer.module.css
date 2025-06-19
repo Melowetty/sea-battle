@@ -1,0 +1,18 @@
+.container-title {
+    font-size: 52px;
+}
+
+.animation{
+    height: 100px;
+}
+
+.earth{
+    height: 100px;
+}
+
+.form{
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
