@@ -17,7 +17,7 @@ export function HomePage() {
 
     const setAuthData = useAuthStore(state => state.setAuthData);
 
-    const user:LoginRequest = {
+    const tempUser:LoginRequest = {
         "authDate": 17251857,
         "firstName": "Стёп",
         "hash": "вфвфапфаф",
@@ -31,7 +31,12 @@ export function HomePage() {
         const { data } = await authApi.login(user);
         const expiresAt = Date.now() + data.accessTokenExpiresIn * 1000;
         console.log(data);
-        setAuthData(data.accessToken, expiresAt);
+        if (!user.photoUrl){
+            user.photoUrl = "../../../../assets/images/denis.png";
+        }
+        setAuthData(data.accessToken, expiresAt, user.firstName, user.photoUrl);
+
+
         navigate("/menu");
     }
 
@@ -45,8 +50,8 @@ export function HomePage() {
                 <span>Вступить в команду!</span>
                 <img className={styles.pointer} src={"../../../assets/images/pointer.gif"} />
             </div>
-            <TelegramLoginButton onClick={() => login(user)} />
-            <FetchButton onClick={() => login(user)} label="Резерв" />
+            <TelegramLoginButton onClick={(tgUser) => login(tgUser)} />
+            <FetchButton onClick={() => login(tempUser)} label="Резерв" />
         </MainContainer>
     </>
   );

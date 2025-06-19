@@ -13,27 +13,42 @@ const setLocalStorage = (key: string, value: string) => {
     }
 };
 
+interface AuthState {
+    token: string | null;
+    expiresAt: number | null;
+    firstName: string | null;
+    photoUrl: string | null ;
+    setAuthData: (token: string, expiresAt: number, firstName:string, photoUrl:string) => void;
+    clearAuthData: () => void;
+    isAuthenticated: () => boolean;
+}
+
 export const useAuthStore = create<AuthState>((set, get) => ({
     token: getLocalStorage('token'),
     expiresAt: Number(getLocalStorage('expiresAt')) || null,
+    firstName: getLocalStorage('firstName'),
+    photoUrl: getLocalStorage('photoUrl'),
 
-    setAuthData: (token, expiresAt) => {
+    setAuthData: (token, expiresAt, firstName, photoUrl) => {
         setLocalStorage('token', token);
         setLocalStorage('expiresAt', expiresAt.toString());
-        set({ token, expiresAt});
+        setLocalStorage('firstName', firstName);
+        setLocalStorage('photoUrl', photoUrl);
+        set({ token, expiresAt, firstName, photoUrl });
     },
 
     clearAuthData: () => {
         if (typeof window !== 'undefined') {
             localStorage.removeItem('token');
             localStorage.removeItem('expiresAt');
+            localStorage.removeItem('firstName');
+            localStorage.removeItem('photoUrl');
         }
-        set({ token: null, expiresAt: null});
+        set({ token: null, expiresAt: null, photoUrl: null , firstName: null});
     },
 
     isAuthenticated: () => {
         const { token, expiresAt } = get();
-        // return !!token && !!expiresAt;
         return !!token && !!expiresAt && expiresAt > Date.now();
     }
 }));
