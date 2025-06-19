@@ -39,7 +39,7 @@ export function PlayPage(id:string) {
         //     console.log(game);
         //     navigate("/lose");
         // })
-        navigate("/lose");
+        navigate('/lose')
     }
 
   return (

@@ -10,11 +10,14 @@ import {useAuthStore} from "~/features/auth/model/authStore";
 import {authApi} from "~/features/telegramAuth/api/telegramAuth.api";
 import type ITelegramUser from "~/types/telegram/api-telegram-user";
 import type {LoginRequest} from "~/features/telegramAuth/api/types";
+import {useState} from "react";
+import {Loading} from "~/shared/loading";
+import {LoadingContainer} from "~/widgets/loadingContainer";
 
 export function HomePage() {
 
     const navigate = useNavigate();
-
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const setAuthData = useAuthStore(state => state.setAuthData);
 
     const tempUser:LoginRequest = {
@@ -28,6 +31,7 @@ export function HomePage() {
     }
 
     const login = async(user:LoginRequest) =>{
+        setIsLoading(true);
         const { data } = await authApi.login(user);
         const expiresAt = Date.now() + data.accessTokenExpiresIn * 1000;
         console.log(data);
@@ -42,6 +46,7 @@ export function HomePage() {
 
     return (
       <>
+        {isLoading && (<LoadingContainer />)}
         <OverlayComponent classOverlay={styles.overlay} classLogo={styles.logo}/>
         <MainContainer classMain={styles.mainContainer} classContent={styles.contentContainer}>
             <h1 className={styles.containerTitle}>АВТ0РИЗАЦИЯ</h1>

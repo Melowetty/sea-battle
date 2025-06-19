@@ -4,12 +4,17 @@ import {Button} from "~/shared/button";
 import {useNavigate} from "react-router";
 import {createRoom, startGameWithBot} from "~/features/room/model/room";
 import type {RoomDto} from "~/processes/game/model/types";
+import {LoadingContainer} from "~/widgets/loadingContainer";
+import {useState} from "react";
 
 export function MenuPage() {
 
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
 
     const handleBotGame = () => {
+        setIsLoading(true);
         const data = createRoom();
         data.then((room) => {
             console.log(room);
@@ -23,6 +28,7 @@ export function MenuPage() {
 
   return (
       <>
+        {isLoading && (<LoadingContainer />)}
         <MainContainer>
             <h1 className={styles.containerTitle}>МЕНЮ</h1>
             <Button onClick={handleBotGame} label={"Начать игру"} />
