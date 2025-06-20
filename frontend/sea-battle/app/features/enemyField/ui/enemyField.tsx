@@ -18,7 +18,7 @@ export function EnemyField(id) {
                 <tr>
                     <th>{row.value}</th>
                     {items.map((item) => (
-                        <Cell type={"enemy"} x={row.value} y={item.value} variant={"enemy"} gameId={id.id.id} />
+                        <Cell type={"enemy"} x={row.value} y={item.value} variant={"enemy"} gameId={id.id.id}/>
                     ))}
                 </tr>
             ))}

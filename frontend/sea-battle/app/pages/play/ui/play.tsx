@@ -8,6 +8,9 @@ import {Header} from "~/widgets/header";
 import {createContext, useCallback, useEffect, useState, useRef} from "react";
 import {useNavigate} from "react-router";
 import {getGame, leaveGame} from "~/features/game/model/game";
+import { type CellHandle } from "~/features/cell/ui/cell";
+
+
 
 type WaitContextType = {
     waiting: boolean;
@@ -23,10 +26,17 @@ export const WaitContext = createContext<WaitContextType>({
 
 export function PlayPage(id:string) {
 
+    const [position, setPosition] = useState<Position>({ x: 0, y: 0, tag: '' });
+
+    const updatePosition = (newPosition: Partial<Position>) => {
+        setPosition(prev => ({ ...prev, ...newPosition }));
+    };
+
     const navigate = useNavigate();
     const intervalIdRef = useRef(null);
     const [waiting, setWaiting] = useState<boolean>(false);
     const [hits, setHits] = useState([]);
+    const cellRefs = useRef<Record<string, CellHandle>>({});
 
     const toggleWaitState = useCallback(() => {
         setWaiting(prev => !prev);
@@ -61,9 +71,21 @@ export function PlayPage(id:string) {
                     ...game.data.playerState.destructions.map(item => [item, 'destructions'] as const)
                 ];
                 console.log(combined);
+                const result = combined.filter(x => !hits.includes(x));
+                result.map((item) => {
+                    console.log(item[0].x, item[0].y);
+                    const cellKey = `${item.x}-${item.y}`;
+                    if (cellRefs.current[cellKey]) {
+                        cellRefs.current[cellKey].handleAlly(item.x, item.y, tag);
+                    }
+                });
+                setHits(combined);
+                setWaiting(false);
             };
         });
     }
+
+
 
     useEffect(() => {
         intervalIdRef.current = setInterval(getDataGame, 5000);
@@ -85,40 +107,40 @@ export function PlayPage(id:string) {
   return (
       <>
         {/*<Header />*/}
-          <WaitContext.Provider      value={{waiting,toggleWaitState,setWaitState: handleSetWaitState}}>
-                <MainContainer>
-                    <div className={`${styles.playContainer}`}>
-                        <FieldContainer>
-                            <h1
-                                className={`${styles.containerTitle}`}>
-                                Ваше поле <img className={styles.avatar} src={"../../../../assets/images/stepan.png"} />
-                            </h1>
-                            <PlayerField id={id}/>
-                        </FieldContainer>
-                        <div className={`${styles.statsContainer}`}>
-                            {!waiting ? (
-                                <h1 className={styles.turnActive}>
-                                    ВАШ Х0Д!
+              <WaitContext.Provider      value={{waiting,toggleWaitState,setWaitState: handleSetWaitState}}>
+                    <MainContainer>
+                        <div className={`${styles.playContainer}`}>
+                            <FieldContainer>
+                                <h1
+                                    className={`${styles.containerTitle}`}>
+                                    Ваше поле <img className={styles.avatar} src={"../../../../assets/images/stepan.png"} />
                                 </h1>
-                            ):(
-                                <h1 className={styles.turnWait}>
-                                    Х0Д ПР0ТИВНИКА!
-                                </h1>
-                            )}
+                                <PlayerField id={id}/>
+                            </FieldContainer>
+                            <div className={`${styles.statsContainer}`}>
+                                {!waiting ? (
+                                    <h1 className={styles.turnActive}>
+                                        ВАШ Х0Д!
+                                    </h1>
+                                ):(
+                                    <h1 className={styles.turnWait}>
+                                        Х0Д ПР0ТИВНИКА!
+                                    </h1>
+                                )}
 
-                            <DialogWindow
-                                confirm={"Завершить"}
-                                title={"Завершение игры"}
-                                description={"Вы уверены, что хотите завершить игру?"}
-                                label="Завершить игру"
-                                onClick={handleSurrender} />
+                                <DialogWindow
+                                    confirm={"Завершить"}
+                                    title={"Завершение игры"}
+                                    description={"Вы уверены, что хотите завершить игру?"}
+                                    label="Завершить игру"
+                                    onClick={handleSurrender} />
+                            </div>
+                            <FieldContainer>
+                                <h1 className={`${styles.containerTitle}`}>Ботик</h1>
+                                <EnemyField id={id} />
+                            </FieldContainer>
                         </div>
-                        <FieldContainer>
-                            <h1 className={`${styles.containerTitle}`}>Ботик</h1>
-                            <EnemyField id={id} />
-                        </FieldContainer>
-                    </div>
-                </MainContainer>
-          </WaitContext.Provider>
+                    </MainContainer>
+              </WaitContext.Provider>
       </>
   )};

@@ -32,6 +32,7 @@ export function PlayerField(id) {
         })
     }, [])
 
+
     useEffect(() => {
         console.log(coordsArray);
     }, [ships]);
