@@ -11,6 +11,7 @@ import type { Route } from "../.react-router/types/app/+types/root";
 import "./app.css";
 import {Header} from "~/widgets/header";
 import {useEffect} from "react";
+import {PositionProvider} from "./contexts/positionContext";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -50,7 +51,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+
+  return (
+  <PositionProvider>
+      <Outlet />
+  </PositionProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

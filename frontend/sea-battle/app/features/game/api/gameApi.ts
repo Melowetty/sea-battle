@@ -17,8 +17,8 @@ export const gameApi = {
             }
         }),
 
-    fire: (id:string, coords: Coordinate) =>
-        httpClientToken.post<GameDto>(API_ENDPOINTS.GAME.LEAVE_GAME(id), coords, {
+    shot: (id:string, coords: Coordinate) =>
+        httpClientToken.post<GameDto>(API_ENDPOINTS.GAME.SHOT(id), coords, {
             headers: {
                 'Content-Type': 'application/json',
             }

@@ -1,34 +1,68 @@
+import { forwardRef, useImperativeHandle, useContext, useState } from "react";
 import styles from "./cell.module.css";
-import type {ReactNode} from "react";
+import { shot } from "~/features/game/model/game";
+import { WaitContext } from "~/pages/play/ui/play";
 
 type CellProps = {
   variant?: "empty" | "ship" | "miss" | "checked" | "space" | "enemy";
   x: number;
   y: number;
-  onClick?: () => void;
   type: "ally" | "enemy";
-}
+  gameId: string;
+};
 
-export function Cell({variant = "empty", ...props}: CellProps): ReactNode {
+export type CellHandle = {
+  handleAlly: (x: number, y: number, tag: string) => void;
+};
 
-  const handleEnemy = (x:number, y:number) => {
-    console.log(x, y, variant);
-    const cell = document.getElementById(`${x}${y}enemy`);
-    if (cell) {
-      cell.className = cell.className.replace(`${styles[variant]}`, `${styles.miss}`);
-      cell.innerHTML = `<img src="../../../../assets/images/circle.png" alt="⚫"/>`;
-      // cell.className = cell.className.replace(`${styles[variant]}`, `${styles.checked}`);
-      // cell.innerHTML = `<img src="../../../../assets/images/red_cross.png" alt="❌"/>`;
+export const Cell = forwardRef<CellHandle, CellProps>(
+    ({ variant = "empty", gameId, ...props }, ref) => {
+      const { waiting, setWaitState } = useContext(WaitContext);
+      const [status, setStatus] = useState("waiting");
+
+      const handleEnemy = (x: number, y: number) => {
+        const data = shot(gameId, { x, y });
+        data.then((data) => {
+          const result = data.data.event;
+          const cell = document.getElementById(`${x}${y}enemy`);
+          if (cell) {
+            if (result === "HIT") {
+              setStatus("checked");
+              cell.innerHTML = `<img src="../../../../assets/images/red_cross.png" alt="❌"/>`;
+            } else if (result === "MISS") {
+              setStatus("miss");
+              cell.innerHTML = `<img src="../../../../assets/images/circle.png" alt="⚫"/>`;
+              setWaitState(true);
+            }
+          }
+        });
+      };
+
+      const handleAlly = (x: number, y: number, tag: string) => {
+        const cell = document.getElementById(`${x}${y}ally`);
+        console.log("pdasdada");
+        if (cell) {
+          if (tag === "hits") {
+            setStatus("checked");
+            cell.innerHTML = `<img src="../../../../assets/images/red_cross.png" alt="❌"/>`;
+          } else if (tag === "destructions") {
+            setStatus("miss");
+          } else {
+            setStatus("miss");
+            cell.innerHTML = `<img src="../../../../assets/images/circle.png" alt="⚫"/>`;
+          }
+        }
+      };
+
+      useImperativeHandle(ref, () => ({
+        handleAlly,
+      }));
+
+      return (
+          <>
+          </>
+      );
     }
-  }
+);
 
-  return (
-    <th
-        data-x={props.x}
-        data-y={props.y}
-        id={`${props.x}${props.y}${props.type}`}
-        className={`${styles.cell} ${styles[variant]}`}
-        onClick={variant === "enemy" ? () => handleEnemy(props.x, props.y) : () => {}}>
-    </th>
-  );
-}
+Cell.displayName = "Cell";
