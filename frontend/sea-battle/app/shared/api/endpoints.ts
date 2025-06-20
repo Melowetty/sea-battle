@@ -13,6 +13,6 @@ export const API_ENDPOINTS = {
     GAME: {
         GET_GAME_STATE: (id:string) => `/games/${id}`,
         LEAVE_GAME: (id:string) => `/games/${id}/leave`,
-        FIRE: (id: string) => `/games/${id}/fire`,
+        SHOT: (id: string) => `/games/${id}/shot`,
     }
 };

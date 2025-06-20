@@ -42,3 +42,7 @@
 .checked{
     background: rgba(236, 5, 5, 0.5);
 }
+
+.disabled{
+    pointer-events: none;
+}

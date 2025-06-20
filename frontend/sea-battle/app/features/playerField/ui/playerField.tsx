@@ -6,6 +6,8 @@ import {useEffect, useState} from "react";
 import {getGame} from "~/features/game/model/game";
 import type {Coordinate, Ship} from "~/processes/game/model/types";
 
+
+
 export function PlayerField(id) {
 
     const [ships, setShips] = useState<Ship[]>();
@@ -43,11 +45,11 @@ export function PlayerField(id) {
 
                       if (coordsArray.some(coords => coords.y === (row.value - 1) && coords.x === (item.value - 1))) {
                           return (
-                              <Cell type={"ally"} variant={"ship"} y={row.value} x={item.value}/>
+                              <Cell type={"ally"} variant={"ship"} y={row.value} x={item.value} gameId={id.id.id} />
                           );
                       }
                       else{
-                          return <Cell type={"ally"} variant={"empty"} y={row.value} x={item.value}/>
+                          return <Cell gameId={id.id.id} type={"ally"} variant={"empty"} y={row.value} x={item.value}/>
                       }
                   })}
               </tr>

@@ -33,6 +33,7 @@
 
 .turn-wait{
     color: red;
+    font-size: 50px;
 }
 
 @keyframes turn-active {
