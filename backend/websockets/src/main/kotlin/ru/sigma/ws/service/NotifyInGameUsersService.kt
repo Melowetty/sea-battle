@@ -13,6 +13,6 @@ class NotifyInGameUsersService(
     }
 
     companion object {
-        private const val GAME_TOPIC = "/topic/game/"
+        private const val GAME_TOPIC = "/topic/game"
     }
 }

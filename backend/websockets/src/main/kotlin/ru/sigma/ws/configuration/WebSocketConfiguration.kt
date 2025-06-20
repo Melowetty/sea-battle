@@ -26,7 +26,7 @@ class WebSocketConfiguration: WebSocketMessageBrokerConfigurer {
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry
             .addEndpoint("/ws")
-            .setAllowedOrigins("*")
+            .setAllowedOriginPatterns("http://localhost", "http://127.0.0.1:5500", "null", "https://d5d5ujno72nh9qu45pq5.sk0vql13.apigw.yandexcloud.net")
             .withSockJS()
     }
 
