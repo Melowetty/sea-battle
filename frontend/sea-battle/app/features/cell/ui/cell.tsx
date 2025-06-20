@@ -40,6 +40,7 @@ export const Cell = forwardRef<CellHandle, CellProps>(
 
       const handleAlly = (x: number, y: number, tag: string) => {
         const cell = document.getElementById(`${x}${y}ally`);
+        console.log("pdasdada");
         if (cell) {
           if (tag === "hits") {
             setStatus("checked");
@@ -58,21 +59,10 @@ export const Cell = forwardRef<CellHandle, CellProps>(
       }));
 
       return (
-          <th
-              data-x={props.x}
-              data-y={props.y}
-              id={`${props.x}${props.y}${props.type}`}
-              className={
-                waiting === false
-                    ? `${styles.cell} ${styles[variant]} ${styles[status]}`
-                    : `${styles.cell} ${styles[variant]} ${styles[status]} ${styles.disabled}`
-              }
-              onClick={
-                variant === "enemy" ? () => handleEnemy(props.x, props.y) : () => {}
-              }
-          ></th>
+          <>
+          </>
       );
     }
 );
 
-Cell.displayName = "Cell"; // Добавляем displayName для удобства отладки
+Cell.displayName = "Cell";

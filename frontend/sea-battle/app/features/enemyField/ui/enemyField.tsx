@@ -7,22 +7,9 @@ export function EnemyField(id) {
 
 
 
-    const items = Array.from({ length: 10 }, (_, index) => ({
-        value: index + 1,
-    }));
 
       return (
       <>
-        <FieldBorder>
-            {items.map((row) => (
-                <tr>
-                    <th>{row.value}</th>
-                    {items.map((item) => (
-                        <Cell type={"enemy"} x={row.value} y={item.value} variant={"enemy"} gameId={id.id.id}/>
-                    ))}
-                </tr>
-            ))}
-        </FieldBorder>
       </>
       );
 }
