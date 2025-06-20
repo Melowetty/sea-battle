@@ -5,10 +5,9 @@ import {PlayerField} from "~/features/playerField";
 import {EnemyField} from "~/features/enemyField";
 import {DialogWindow} from "~/shared/dialog";
 import {Header} from "~/widgets/header";
-import {createContext, useCallback, useEffect, useState} from "react";
+import {createContext, useCallback, useEffect, useState, useRef} from "react";
 import {useNavigate} from "react-router";
 import {getGame, leaveGame} from "~/features/game/model/game";
-import {family} from "detect-libc";
 
 type WaitContextType = {
     waiting: boolean;
@@ -25,8 +24,9 @@ export const WaitContext = createContext<WaitContextType>({
 export function PlayPage(id:string) {
 
     const navigate = useNavigate();
-
+    const intervalIdRef = useRef(null);
     const [waiting, setWaiting] = useState<boolean>(false);
+    const [hits, setHits] = useState([]);
 
     const toggleWaitState = useCallback(() => {
         setWaiting(prev => !prev);
@@ -49,12 +49,28 @@ export function PlayPage(id:string) {
         };
     }, []);
 
-    useEffect(() => {
+    const getDataGame = () => {
         const data = getGame(id.id);
         data.then((game) => {
             console.log(game);
-        })
+            console.log(game.data.currentPlayer);
+            if (game.data.currentPlayer != "00000000-0000-0000-0000-000000000001"){
+                const combined = [
+                    ...game.data.playerState.hits.map(item => [item, 'hits'] as const),
+                    ...game.data.playerState.misses.map(item => [item, 'misses'] as const),
+                    ...game.data.playerState.destructions.map(item => [item, 'destructions'] as const)
+                ];
+                console.log(combined);
+            };
+        });
+    }
 
+    useEffect(() => {
+        intervalIdRef.current = setInterval(getDataGame, 5000);
+
+        return () => {
+            clearInterval(intervalIdRef.current);
+        };
     }, []);
 
     const handleSurrender = () => {
@@ -62,9 +78,9 @@ export function PlayPage(id:string) {
         data.then((game) => {
             console.log(game);
             navigate("/lose");
-        })
+        });
         // navigate('/lose')
-    }
+    };
 
   return (
       <>

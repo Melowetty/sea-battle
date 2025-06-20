@@ -30,11 +30,11 @@ export function Cell({variant = "empty", gameId,  ...props}: CellProps): ReactNo
         else if (result === "MISS") {
           setStatus("miss");
           cell.innerHTML = `<img src="../../../../assets/images/circle.png" alt="⚫"/>`;
+          setWaitState(true);
         }
       }
-      console.log(data);
-      console.log(waiting);
-      setWaitState(true);
+      // console.log(data);
+      // console.log(waiting);
     });
   }
 
