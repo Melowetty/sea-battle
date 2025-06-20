@@ -60,7 +60,7 @@ class GameService(
     ): GameDto {
         val user = getCurrentUserOrThrow()
         val game = getGameOrThrow(gameId)
-
+        checkBotTurn(gameId, loadGameState(gameId))
         return game.toDto(user.id)
     }
 
@@ -70,14 +70,9 @@ class GameService(
     ): AfterShotStateDto {
         val gameState = loadGameState(gameId) // полуеаем текущее состояние игры по id
 
-//        if (getCurrentUser(gameState) != getCurrentUserOrThrow().id) {
-//            return AfterShotStateDto(
-//                event = Event.FILL,
-//                targetPlayer = getCurrentUser(gameState),
-//                nextPlayer = getCurrentUser(gameState),
-//                fieldsDifference = listOf()
-//            )
-//        }
+        require(getCurrentUser(gameState) == getCurrentUserOrThrow().id) {
+            "Not your turn"
+        }
 
         val result = shotService.makeShot(gameId, gameState, shot) // делаем выстрел и получаем результат
 
@@ -168,14 +163,17 @@ class GameService(
             Thread.sleep(5000)
             val coords = botService.processShot(botShootingState, botId)
             var result = shotService.makeShot(gameId, gameState, coords)
+            calculateNextMove(gameId,  result.afterShotState.event, gameState)
             saveGameState(gameId, result.gameState)
 
             while (result.afterShotState.event == Event.HIT || result.afterShotState.event == Event.DESTRUCTION) {
                 Thread.sleep(5000)
                 val newCoords = botService.processShot(botShootingState, botId)
                 result = shotService.makeShot(gameId, gameState, newCoords)
+                calculateNextMove(gameId,  result.afterShotState.event, gameState)
                 saveGameState(gameId, result.gameState)
             }
+            return@Thread
         }.start()
     }
 

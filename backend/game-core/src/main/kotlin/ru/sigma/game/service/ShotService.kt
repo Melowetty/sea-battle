@@ -1,6 +1,5 @@
 package ru.sigma.game.service
 
-import jakarta.persistence.EntityNotFoundException
 import java.util.UUID
 import org.springframework.stereotype.Service
 import ru.sigma.common.model.Coordinate
@@ -80,17 +79,18 @@ class ShotService (
         shotCoordinate: Coordinate,
         fieldSize: Int,
     ): EventChangesDto {
-        var fieldDifference = listOf<CoordinateStatusDto>()
+        val fieldDifference = mutableListOf<CoordinateStatusDto>()
         var event = Event.MISS
-        when {
-            shotCoordinate in enemyPlayerState.misses -> return EventChangesDto(Event.FILL, fieldDifference)
-            shotCoordinate in enemyPlayerState.hits -> return EventChangesDto(Event.FILL, fieldDifference)
-            shotCoordinate in enemyPlayerState.destructions -> return EventChangesDto(Event.FILL, fieldDifference)
+        when (shotCoordinate) {
+            in enemyPlayerState.misses -> return EventChangesDto(Event.FILL, fieldDifference)
+            in enemyPlayerState.hits -> return EventChangesDto(Event.FILL, fieldDifference)
+            in enemyPlayerState.destructions -> return EventChangesDto(Event.FILL, fieldDifference)
         }
         enemyPlayerState.ships.forEach { ship ->
             if (shotCoordinate in ship.coordinates) {
                 enemyPlayerState.hits += shotCoordinate // добавляем попадание
                 ship.healthPoints--
+                ship.hits += shotCoordinate
                 event = Event.HIT
                 fieldDifference += CoordinateStatusDto(shotCoordinate, CellStatus.HIT)
 
@@ -105,7 +105,7 @@ class ShotService (
 //                            enemyPlayerState.destructions += shipCoordinate
 //                        }
 //                        enemyPlayerState.hits = hitsList as List<Coordinate>
-                    enemyPlayerState.hits = enemyPlayerState.hits - ship.coordinates.toSet() // непроверено что работает
+                    enemyPlayerState.hits -= ship.coordinates.toSet() // непроверено что работает
                     enemyPlayerState.destructions += ship.coordinates
                     fieldDifference += makeMissAroundDestruction(enemyPlayerState, fieldSize, ship)
                     if (enemyPlayerState.aliveShips == 0) {
@@ -113,6 +113,12 @@ class ShotService (
                     }
                 }
             }
+        }
+
+        if (fieldDifference.isEmpty()) {
+            fieldDifference += CoordinateStatusDto(shotCoordinate, CellStatus.MISS)
+            enemyPlayerState.misses += shotCoordinate
+
         }
         return EventChangesDto(
             event = event,

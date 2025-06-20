@@ -10,14 +10,15 @@ import ru.sigma.data.domain.model.game.BotShootingState
 @Component
 class DoctorLivsiBot: BaseBot {
     override fun process(state: BotShootingState): Coordinate {
-        if (state.hits.isEmpty()) { // если нет попаданий по живым кораблям
-            return getRandomShot(state)
-        }
+        return getRandomShot(state)
+//        if (state.hits.isEmpty()) { // если нет попаданий по живым кораблям
+//            return getRandomShot(state)
+//        }
 
-        if (isLineExist(state)) { // если есть линия из попаданий
-            return getLineShotCoordinate(state)
-        }
-        return getNeighborShotCoordinate(state) // стреляем рядом с любым попаданием
+//        if (isLineExist(state)) { // если есть линия из попаданий
+//            return getLineShotCoordinate(state)
+//        }
+//        return getNeighborShotCoordinate(state) // стреляем рядом с любым попаданием
     }
 
     override fun getBot(): GameBot {

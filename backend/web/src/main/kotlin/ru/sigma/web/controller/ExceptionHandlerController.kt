@@ -36,4 +36,10 @@ class ExceptionHandlerController {
     fun handlePermissionDeniedException(e: PermissionDeniedException): ErrorResponse {
         return ErrorResponse(e.message ?: "", "PERMISSION_DENIED")
     }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleIllegalArgumentException(e: IllegalArgumentException): ErrorResponse {
+        return ErrorResponse(e.message ?: "", "ILLEGAL_ARGUMENT")
+    }
 }
