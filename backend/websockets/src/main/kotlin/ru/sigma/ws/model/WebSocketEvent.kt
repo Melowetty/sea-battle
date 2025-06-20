@@ -1,6 +1,6 @@
 package ru.sigma.ws.model
 
 data class WebSocketEvent(
-    val type: String,
+    val type: EventType,
     val data: Any?
 )

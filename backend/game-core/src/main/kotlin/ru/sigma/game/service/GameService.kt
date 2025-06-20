@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException
 import java.time.Instant
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.sigma.botengine.service.BotTurnService
@@ -22,6 +23,8 @@ import ru.sigma.data.repository.GameResultRepository
 import ru.sigma.data.repository.UserRepository
 import ru.sigma.game.domain.dto.AfterShotStateDto
 import ru.sigma.game.domain.dto.GameDto
+import ru.sigma.game.domain.event.GameFinishEvent
+import ru.sigma.game.domain.event.GameTurnEvent
 import ru.sigma.game.domain.exception.GameNotFoundException
 
 @Service
@@ -32,7 +35,8 @@ class GameService(
     private val objectMapper: ObjectMapper,
     private val shotService: ShotService,
     private val gameResultRepository: GameResultRepository,
-    private val botService: BotTurnService
+    private val botService: BotTurnService,
+    private val eventPublisher: ApplicationEventPublisher
 ) {
 
     fun startNewGame(
@@ -80,6 +84,10 @@ class GameService(
 
         saveGameState(gameId, result.gameState)
 
+        Thread {
+            Thread.sleep(1000)
+            eventPublisher.publishEvent(GameTurnEvent(gameId, result.afterShotState))
+        }.start()
         return result.afterShotState // возвращаем рещультат выстрела
     }
 
@@ -109,6 +117,8 @@ class GameService(
             )
         )
         gameRepository.deleteById(gameId)
+
+        eventPublisher.publishEvent(GameFinishEvent(gameId, winner.id))
     }
 
     private fun getCurrentUser(game: GameState): UUID = game.players[1 - (game.round % 2)]
@@ -165,6 +175,7 @@ class GameService(
             var result = shotService.makeShot(gameId, gameState, coords)
             calculateNextMove(gameId,  result.afterShotState.event, gameState)
             saveGameState(gameId, result.gameState)
+            eventPublisher.publishEvent(GameTurnEvent(gameId, result.afterShotState))
 
             while (result.afterShotState.event == Event.HIT || result.afterShotState.event == Event.DESTRUCTION) {
                 Thread.sleep(5000)
@@ -172,6 +183,7 @@ class GameService(
                 result = shotService.makeShot(gameId, gameState, newCoords)
                 calculateNextMove(gameId,  result.afterShotState.event, gameState)
                 saveGameState(gameId, result.gameState)
+                eventPublisher.publishEvent(GameTurnEvent(gameId, result.afterShotState))
             }
             return@Thread
         }.start()
