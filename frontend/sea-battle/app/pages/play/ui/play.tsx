@@ -54,6 +54,7 @@ export function PlayPage(id:string) {
         data.then((game) => {
             console.log(game);
         })
+
     }, []);
 
     const handleSurrender = () => {
